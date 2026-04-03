@@ -29,6 +29,23 @@ class User(db.Model, UserMixin):
     services = db.relationship('Service', foreign_keys='Service.customer_id', backref='customer')
     franchise_services = db.relationship('Service', foreign_keys='Service.franchise_id', backref='franchise')
 
+
+class Appointment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    phone = db.Column(db.String(15), nullable=False)
+    email = db.Column(db.String(120))
+    date = db.Column(db.String(20))
+    time = db.Column(db.String(20))
+    location = db.Column(db.String(100))
+    brand = db.Column(db.String(50))
+    car_model = db.Column(db.String(50))
+    year = db.Column(db.String(10))
+    services = db.Column(db.Text) 
+    status = db.Column(db.String(50), default='Pending')
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
 class Service(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     customer_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)

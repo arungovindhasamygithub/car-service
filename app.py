@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash, jso
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
-from models import db, User, Service, ServiceItem, Complaint, Product, PartsRequest, Payment, FranchiseRequest
+from models import db, User, Service, ServiceItem, Complaint, Product, PartsRequest, Payment, FranchiseRequest, Appointment
 from datetime import datetime
 import json
 import math
@@ -185,6 +185,35 @@ def track_service(service_id):
         return redirect(url_for('customer_dashboard'))
     return render_template('customer/track_service.html', service=service)
 
+
+@app.route('/book-appointment', methods=['POST'])
+def book_appointment():
+    name = request.form.get('name')
+    phone = request.form.get('phone')
+    email = request.form.get('email')
+    date = request.form.get('date')
+    time = request.form.get('time')
+    location = request.form.get('location')
+    brand = request.form.get('brand')
+    car_model = request.form.get('model') 
+    year = request.form.get('year')
+    
+    # Get all checked checkboxes (returns a list) and join them into a comma-separated string
+    services_list = request.form.getlist('services')
+    services_str = ', '.join(services_list)
+
+    appointment = Appointment(
+        name=name, phone=phone, email=email, date=date, time=time,
+        location=location, brand=brand, car_model=car_model, year=year, services=services_str
+    )
+    
+    db.session.add(appointment)
+    db.session.commit()
+    
+    flash('Appointment booked successfully! We will contact you shortly.', 'success')
+    return redirect(url_for('index') + '#contact')
+
+
 @app.route('/customer/payment/<int:service_id>', methods=['GET', 'POST'])
 @login_required
 def payment(service_id):
@@ -199,12 +228,32 @@ def payment(service_id):
             transaction_id=transaction_id
         )
         db.session.add(payment_record)
+
+        # NEW: Reward point calculation (e.g., 1 point per ₹100 spent)
+        points_earned = int(service.total_amount // 100)
+        
+        # Access the associated customer and add points
+        if service.customer:
+            service.customer.points += points_earned
+
         db.session.commit()
-        flash('Payment successful!', 'success')
+        flash(f'Payment successful! You earned {points_earned} reward points.', 'success')
         return redirect(url_for('customer_dashboard'))
     
     payment_record = Payment.query.filter_by(service_id=service_id).first()
     return render_template('customer/payment.html', service=service, payment=payment_record, upi_id=app.config['UPI_ID'])
+
+
+
+@app.route('/admin/appointments')
+@login_required
+def manage_appointments():
+    if current_user.role != 'admin':
+        return redirect(url_for('index'))
+    
+    appointments = Appointment.query.order_by(Appointment.created_at.desc()).all()
+    return render_template('admin/appointments.html', appointments=appointments)
+
 
 @app.route('/franchise/dashboard')
 @login_required
