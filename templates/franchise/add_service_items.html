@@ -1,0 +1,241 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .item-card {
+        background: #ffffff;
+        border-radius: 12px;
+        border: none;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+    .item-header {
+        background: #1a1a1a;
+        color: #ffffff;
+        border-radius: 12px 12px 0 0;
+        border-bottom: 3px solid #d32f2f;
+    }
+    .line-item-row {
+        background: #fdfdfd;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        padding: 20px;
+        transition: all 0.2s ease;
+    }
+    .line-item-row:hover {
+        border-color: #d32f2f;
+        background: #fff;
+    }
+    .form-label {
+        font-weight: 700;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        color: #666;
+        letter-spacing: 0.5px;
+    }
+    .btn-remove {
+        color: #dc3545;
+        background: transparent;
+        border: 1px solid #ffc1c1;
+        transition: all 0.2s;
+    }
+    .btn-remove:hover {
+        background: #dc3545;
+        color: white;
+    }
+    .btn-add-line {
+        border: 2px dashed #ced4da;
+        color: #666;
+        font-weight: 600;
+        background: #f8f9fa;
+    }
+    .btn-add-line:hover {
+        border-color: #d32f2f;
+        color: #d32f2f;
+        background: #fff;
+    }
+    .table-dark-header {
+        background-color: #f8f9fa;
+        color: #333;
+        border-bottom: 2px solid #dee2e6;
+    }
+    .table-dark-header th {
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        padding: 15px;
+        border: none;
+    }
+    .table tbody td {
+        padding: 15px;
+        vertical-align: middle;
+        color: #4a4a4a;
+        border-bottom: 1px solid #f0f0f0;
+    }
+</style>
+
+<div class="container my-5 fade-in">
+    <div class="row">
+        <div class="col-12">
+            <div class="item-card mb-4">
+                <div class="item-header p-4 d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="fw-bold mb-1">Service Record: #{{ service.id }}</h5>
+                        <p class="small mb-0 opacity-75">
+                            <i class="fas fa-user me-1"></i> {{ service.customer.username }} 
+                            <span class="mx-2">|</span>
+                            <i class="fas fa-car me-1"></i> <span class="text-danger fw-bold">{{ service.vehicle_number }}</span>
+                        </p>
+                    </div>
+                    <div class="text-end">
+                        <span class="badge bg-{{ 'warning' if service.overall_status == 'Pending' else 'info' if service.overall_status == 'In Progress' else 'success' }} px-4 py-2 fs-6 text-dark shadow-sm">
+                            {{ service.overall_status|upper }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="card-body p-4 p-md-5">
+                    
+                    {% if service.service_items %}
+                    <h5 class="fw-bold text-dark mb-3 border-bottom pb-2 d-inline-block">Active Service Lines</h5>
+                    <div class="table-responsive mb-5 border rounded shadow-sm">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-dark-header">
+                                <tr>
+                                    <th>Issue Category</th>
+                                    <th>Technical Description</th>
+                                    <th class="text-end">Cost</th>
+                                    <th class="text-center">Line Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in service.service_items %}
+                                <tr>
+                                    <td class="fw-bold text-dark">{{ item.issue_type }}</td>
+                                    <td class="text-muted small">{{ item.description or 'No notes provided.' }}</td>
+                                    <td class="text-end fw-bold text-danger">₹{{ "%.2f"|format(item.charge) }}</td>
+                                    <td class="text-center">
+                                        <select class="form-select form-select-sm w-auto d-inline-block fw-bold border-1 shadow-none {% if item.status == 'Pending' %}bg-warning bg-opacity-10 text-dark border-warning{% elif item.status == 'In Progress' %}bg-info bg-opacity-10 text-dark border-info{% else %}bg-success bg-opacity-10 text-success border-success{% endif %}" onchange="updateItemStatus({{ item.id }}, this.value)">
+                                            <option value="Pending" {% if item.status == 'Pending' %}selected{% endif %}>Pending</option>
+                                            <option value="In Progress" {% if item.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                                            <option value="Completed" {% if item.status == 'Completed' %}selected{% endif %}>Completed</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% endif %}
+
+                    <h5 class="fw-bold text-dark mb-3 border-bottom pb-2 d-inline-block">Add Additional Services</h5>
+                    <form method="POST" id="serviceForm">
+                        <div id="itemsContainer">
+                            <div class="line-item-row mb-4">
+                                <div class="row g-3">
+                                    <div class="col-md-3">
+                                        <label class="form-label">Issue Category</label>
+                                        <input type="text" class="form-control border-0 bg-light" name="issue_type[]" placeholder="e.g. Engine, Brakes, AC" required>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <label class="form-label">Technical Description</label>
+                                        <input type="text" class="form-control border-0 bg-light" name="description[]" placeholder="Diagnostic notes or specific part details">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label">Labor / Part (₹)</label>
+                                        <input type="number" class="form-control border-0 bg-light" name="charge[]" step="0.01" placeholder="0.00" required>
+                                    </div>
+                                    <div class="col-md-2 d-flex align-items-end">
+                                        <button type="button" class="btn btn-remove w-100 fw-bold" onclick="removeItem(this)">
+                                            <i class="fas fa-times me-2"></i>Remove
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn btn-add-line w-100 py-3 mb-5" onclick="addItem()">
+                            <i class="fas fa-plus-circle me-2"></i>Add Blank Line
+                        </button>
+
+                        <div class="row border-top pt-4">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <a href="{{ url_for('franchise_dashboard') }}" class="btn btn-outline-dark px-4 fw-bold">
+                                    <i class="fas fa-arrow-left me-2"></i> Back to Bay
+                                </a>
+                            </div>
+                            <div class="col-md-6 text-md-end">
+                                <button type="submit" class="btn btn-danger btn-lg px-5 fw-bold shadow">
+                                    <i class="fas fa-plus me-2"></i>Append to Job Card
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function updateItemStatus(itemId, newStatus) {
+    fetch(`/franchise/update-item-status/${itemId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ status: newStatus })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(data.success) {
+            location.reload();
+        } else {
+            alert('Failed to update status. Please try again.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Network error occurred.');
+    });
+}
+
+function addItem() {
+    const container = document.getElementById('itemsContainer');
+    const newItem = document.createElement('div');
+    newItem.className = 'line-item-row mb-4 fade-in';
+    newItem.innerHTML = `
+        <div class="row g-3">
+            <div class="col-md-3">
+                <label class="form-label">Issue Category</label>
+                <input type="text" class="form-control border-0 bg-light" name="issue_type[]" placeholder="e.g. Engine, Brakes, AC" required>
+            </div>
+            <div class="col-md-5">
+                <label class="form-label">Technical Description</label>
+                <input type="text" class="form-control border-0 bg-light" name="description[]" placeholder="Diagnostic notes or details">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Labor / Part (₹)</label>
+                <input type="number" class="form-control border-0 bg-light" name="charge[]" step="0.01" placeholder="0.00" required>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="button" class="btn btn-remove w-100 fw-bold" onclick="removeItem(this)">
+                    <i class="fas fa-times me-2"></i>Remove
+                </button>
+            </div>
+        </div>
+    `;
+    container.appendChild(newItem);
+}
+
+function removeItem(button) {
+    const row = button.closest('.line-item-row');
+    if (document.querySelectorAll('.line-item-row').length > 1) {
+        row.style.opacity = '0';
+        row.style.transform = 'translateX(20px)';
+        setTimeout(() => row.remove(), 200);
+    } else {
+        alert("If you are not adding new items, simply click 'Back to Bay'.");
+    }
+}
+</script>
+{% endblock %}

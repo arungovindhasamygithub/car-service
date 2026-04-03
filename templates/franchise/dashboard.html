@@ -1,0 +1,232 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .franchise-stat-card {
+        background: linear-gradient(135deg, #2b2b2b 0%, #1a1a1a 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        transition: transform 0.3s ease;
+    }
+    .franchise-stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    }
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #ffffff;
+    }
+    .action-module {
+        background: #ffffff;
+        border: 1px solid #e0e0e0;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    .action-module:hover {
+        border-color: #d32f2f;
+        box-shadow: 0 5px 15px rgba(211,47,47,0.1);
+        transform: translateY(-3px);
+    }
+    .service-card {
+        border-left: 4px solid #d32f2f;
+        border-radius: 8px;
+        background: #fafafa;
+        transition: all 0.2s ease;
+    }
+    .service-card:hover {
+        background: #ffffff;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+</style>
+
+<div class="container my-5 fade-in">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 border-bottom border-danger pb-3">
+        <h2 class="fw-bold text-white mb-3 mb-md-0">Welcome, {{ current_user.franchise_name }}</h2>
+        <div class="d-flex gap-2">
+            <span class="badge bg-success bg-opacity-10 text-success border border-success d-flex align-items-center px-3">
+                Live & Operating
+            </span>
+            <a href="{{ url_for('create_service') }}" class="btn btn-danger fw-bold">
+                Deploy New Service
+            </a>
+        </div>
+    </div>
+    
+    <div class="row g-4 mb-5">
+        <div class="col-sm-6 col-lg-4">
+            <div class="card franchise-stat-card h-100 p-3">
+                <div class="card-body d-flex flex-column align-items-center text-center">
+                    <h6 class="text-uppercase text-danger fw-bold tracking-wide mb-3">Total Services</h6>
+                    <div class="stat-number mb-2">{{ services|length }}</div>
+                    <i class="fas fa-tools text-secondary opacity-50 fs-4 mt-auto"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-4">
+            <div class="card franchise-stat-card h-100 p-3">
+                <div class="card-body d-flex flex-column align-items-center text-center">
+                    <h6 class="text-uppercase text-danger fw-bold tracking-wide mb-3">Active Tickets</h6>
+                    <div class="stat-number mb-2" id="pendingServices">0</div>
+                    <i class="fas fa-clock text-secondary opacity-50 fs-4 mt-auto"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-4">
+            <div class="card franchise-stat-card h-100 p-3">
+                <div class="card-body d-flex flex-column align-items-center text-center">
+                    <h6 class="text-uppercase text-danger fw-bold tracking-wide mb-3">Completed</h6>
+                    <div class="stat-number mb-2" id="completedServices">0</div>
+                    <i class="fas fa-check-double text-secondary opacity-50 fs-4 mt-auto"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <h5 class="fw-bold text-dark mb-3">Management Modules</h5>
+    <div class="row justify-content-center g-3 mb-5">
+        <div class="col-md-4">
+            <div class="action-module p-4 text-center h-100" onclick="window.location.href='{{ url_for('create_service') }}'">
+                <i class="fas fa-plus-square fs-3 text-danger mb-2"></i>
+                <h6 class="fw-bold text-dark mb-1">Service Intake</h6>
+                <p class="small text-muted mb-0">Log new vehicle entry</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="action-module p-4 text-center h-100" onclick="window.location.href='{{ url_for('inventory') }}'">
+                <i class="fas fa-boxes fs-3 text-dark mb-2"></i>
+                <h6 class="fw-bold text-dark mb-1">Inventory Control</h6>
+                <p class="small text-muted mb-0">Manage stock & parts</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="action-module p-4 text-center h-100" onclick="window.location.href='{{ url_for('parts_request') }}'">
+                <i class="fas fa-truck-loading fs-3 text-dark mb-2"></i>
+                <h6 class="fw-bold text-dark mb-1">Logistics</h6>
+                <p class="small text-muted mb-0">Request inventory transfers</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-dark text-white p-3 d-flex justify-content-between align-items-center border-0">
+                    <h5 class="mb-0 fw-bold">Live Service Bay</h5>
+                    <span class="badge bg-danger">{{ services|length }} Vehicles</span>
+                </div>
+                <div class="card-body p-3" style="max-height: 600px; overflow-y: auto;">
+                    {% if services %}
+                        {% for service in services %}
+                        <div class="card service-card border-top-0 border-end-0 border-bottom-0 mb-3 p-3">
+                            <div class="row g-2 align-items-center">
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <i class="fas fa-user-circle text-muted me-2 fs-5"></i>
+                                        <span class="fw-bold text-dark fs-5">{{ service.customer.username }}</span>
+                                    </div>
+                                    <p class="mb-1 text-muted small"><i class="fas fa-phone-alt me-1"></i> {{ service.customer.mobile }}</p>
+                                    <p class="mb-1 text-dark small fw-bold mt-2">
+                                        <i class="fas fa-car-side text-danger me-1"></i> <span class="text-danger">{{ service.vehicle_number }}</span>
+                                        {% if service.vehicle_model %} | {{ service.vehicle_model }}{% endif %}
+                                    </p>
+                                    <p class="mb-0 text-muted small"><i class="fas fa-calendar-alt me-1"></i> {{ service.created_at.strftime('%d %b %Y, %H:%M') }}</p>
+                                </div>
+                                <div class="col-md-6 d-flex flex-column justify-content-between align-items-end text-end border-start ps-3">
+                                    <div class="mb-3 w-100 text-end">
+                                        <span class="badge bg-{{ 'warning' if service.overall_status == 'Pending' else 'info' if service.overall_status == 'In Progress' else 'success' }} text-dark px-3 py-2 fw-bold mb-2">
+                                            {{ service.overall_status }}
+                                        </span>
+                                        <div class="mt-2">
+                                            <span class="text-muted small fw-bold text-uppercase d-block">Accrued Cost</span>
+                                            <span class="fs-4 fw-bolder text-dark">₹{{ "%.2f"|format(service.total_amount or 0) }}</span>
+                                        </div>
+                                    </div>
+                                    <a href="{{ url_for('add_service_items', service_id=service.id) }}" class="btn btn-outline-danger btn-sm fw-bold px-4">Update Service Record</a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-warehouse fa-3x text-muted mb-3 opacity-50"></i>
+                            <h5 class="text-muted fw-normal mb-3">Service bay is currently empty.</h5>
+                            <a href="{{ url_for('create_service') }}" class="btn btn-dark fw-bold px-4">Log New Vehicle</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-dark text-white p-3 border-0">
+                    <h5 class="mb-0 fw-bold">Financial Overview</h5>
+                </div>
+                <div class="card-body p-4 bg-light d-flex flex-column justify-content-center">
+                    <div class="row text-center g-3">
+                        <div class="col-6">
+                            <div class="bg-white p-3 rounded border shadow-sm">
+                                <span class="text-muted small fw-bold text-uppercase d-block mb-1">In Progress</span>
+                                <span class="fs-3 fw-bolder text-info" id="progressCount">0</span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="bg-white p-3 rounded border shadow-sm">
+                                <span class="text-muted small fw-bold text-uppercase d-block mb-1">Pending</span>
+                                <span class="fs-3 fw-bolder text-warning" id="pendingCount">0</span>
+                            </div>
+                        </div>
+                        <div class="col-12 mt-3">
+                            <div class="bg-white p-4 rounded border border-danger shadow-sm">
+                                <span class="text-muted small fw-bold text-uppercase d-block mb-1">Total Booked Revenue</span>
+                                <span class="fs-1 fw-bolder text-danger" id="totalRevenue">₹0.00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let pending = 0;
+    let inProgress = 0;
+    let completed = 0;
+    let totalRevenue = 0;
+    
+    let servicesData = [
+        {% for service in services %}
+            {
+                status: "{{ service.overall_status }}",
+                // Added 'or 0' so if total_amount is None, it outputs 0 instead of breaking the JS array
+                amount: {{ service.total_amount or 0 }}
+            }{% if not loop.last %},{% endif %}
+        {% endfor %}
+    ];
+    
+    servicesData.forEach(service => {
+        if (service.status === 'Pending') {
+            pending++;
+        } else if (service.status === 'In Progress') {
+            inProgress++;
+        } else if (service.status === 'Completed') {
+            completed++;
+            totalRevenue += service.amount;
+        }
+    });
+    
+    document.getElementById('pendingServices').innerText = pending + inProgress;
+    document.getElementById('completedServices').innerText = completed;
+    document.getElementById('pendingCount').innerText = pending;
+    document.getElementById('progressCount').innerText = inProgress;
+    document.getElementById('totalRevenue').innerText = '₹' + totalRevenue.toFixed(2);
+});
+
+// Refreshes the page every 60 seconds to keep live data updated
+setInterval(function() { location.reload(); }, 60000);
+</script>
+{% endblock %}

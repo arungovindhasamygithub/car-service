@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    /* Custom styles specifically for the branches page to match the dark theme */
+    .branches-hero {
+        background-color: #050505;
+        padding: 100px 0;
+        border-bottom: 2px solid var(--accent-red);
+        position: relative;
+    }
+    
+    .lift-card {
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        border: 1px solid #333 !important;
+        background-color: #222;
+    }
+    
+    .lift-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.5) !important;
+        border-color: var(--accent-red) !important;
+    }
+
+    .branch-btn-primary {
+        background-color: var(--accent-red);
+        color: white;
+        border: none;
+        transition: 0.3s;
+    }
+    .branch-btn-primary:hover {
+        background-color: #b02a31;
+        color: white;
+    }
+
+    .franchise-cta-box {
+        background: linear-gradient(135deg, #151515 0%, #0a0a0a 100%);
+        border: 1px solid rgba(211, 47, 47, 0.3);
+        border-radius: 16px;
+        position: relative;
+        overflow: hidden;
+    }
+    .franchise-cta-box::before {
+        content: '';
+        position: absolute;
+        top: 0; right: 0;
+        width: 400px; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(211, 47, 47, 0.15));
+        transform: skewX(-20deg);
+    }
+</style>
+
+<div class="branches-hero text-center text-white mb-5">
+    <div class="container fade-in">
+        <span class="section-tag mb-2 mx-auto d-table" style="letter-spacing: 3px;">Location Directory</span>
+        <h1 class="fw-bolder mb-3" style="font-size: 3.5rem; letter-spacing: -1px;">Authorized Service Centers</h1>
+        <p class="text-light opacity-75 mx-auto" style="max-width: 600px; line-height: 1.6;">
+            Find a certified AutoWorks garage near you. Professional equipment, verified mechanics, and guaranteed quality.
+        </p>
+    </div>
+</div>
+
+<div class="container mb-5" style="position: relative; z-index: 10;">
+    {% if branches %}
+    <div class="row g-4">
+        {% for branch in branches %}
+        <div class="col-md-6 col-lg-4 fade-in" style="animation-delay: {{ loop.index0 * 0.1 }}s;">
+            <div class="card h-100 lift-card" style="border-radius: 12px;">
+                <div class="card-body p-4 d-flex flex-column">
+                    
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="p-2 rounded me-3" style="background-color: rgba(211, 60, 68, 0.1); color: var(--accent-red);">
+                                <i class="fas fa-map-marker-alt fs-5"></i>
+                            </div>
+                            <span class="text-uppercase fw-bolder small tracking-wide" style="color: var(--accent-red);">{{ branch.franchise_location }}</span>
+                        </div>
+                        
+                        {% if branch.distance %}
+                        <span class="badge" style="background-color: #333; color: #fff; font-weight: normal;">{{ "%.1f"|format(branch.distance) }} km away</span>
+                        {% endif %}
+                    </div>
+                    
+                    <h4 class="fw-bold text-white mb-3">{{ branch.franchise_name }}</h4>
+                    
+                    <div class="mb-4 flex-grow-1">
+                        <p class="text-light opacity-50 mb-2" style="line-height: 1.6;">
+                            {{ branch.franchise_address }}
+                        </p>
+                        <p class="text-white fw-bold mb-0">
+                            <i class="fas fa-phone-alt me-2" style="color: var(--accent-red);"></i> +91 98765 43210
+                        </p>
+                    </div>
+                    
+                    <div class="p-3 rounded mb-4 text-center" style="background-color: #111; border: 1px solid #333;">
+                        <span class="text-muted fw-bold small text-uppercase tracking-wide">Operating Hours</span><br>
+                        <span class="text-white fw-bold">Mon-Sat • 9:00 AM - 8:00 PM</span>
+                    </div>
+
+                    <div class="d-flex flex-column gap-2 mt-auto">
+                        <button class="btn branch-btn-primary fw-bold py-2" onclick="getDirections({{ branch.franchise_latitude }}, {{ branch.franchise_longitude }})">
+                            <i class="fas fa-location-arrow me-2"></i> Navigate to Bay
+                        </button>
+                        <a href="tel:+919876543210" class="btn btn-outline-light fw-bold py-2" style="border-color: #444;">
+                            Call Branch
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="row justify-content-center py-5 fade-in">
+        <div class="col-md-8 text-center">
+            <div class="card p-5" style="background-color: #222; border-radius: 12px; border: 1px dashed #444 !important;">
+                <i class="fas fa-tools fa-3x text-muted opacity-25 mb-3"></i>
+                <h4 class="fw-bold text-white mb-2">Network Expanding</h4>
+                <p class="text-muted mb-0">We are currently expanding our network. Authorized service centers will be listed here shortly.</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="row mt-5 pt-5 fade-in">
+        <div class="col-12">
+            <div class="franchise-cta-box p-4 p-md-5 d-flex flex-column flex-lg-row align-items-center justify-content-between shadow-lg">
+                <div class="mb-4 mb-lg-0 text-center text-lg-start position-relative z-index-2">
+                    <h3 class="fw-bolder text-white mb-2 text-uppercase">Partner with Excellence.</h3>
+                    <p class="text-light opacity-75 mb-0 small" style="max-width: 600px; line-height: 1.6;">
+                        Join the AutoWorks network. Elevate your garage with our proprietary digital workflow and dominate your local market.
+                    </p>
+                </div>
+                <div class="position-relative z-index-2">
+                    <a href="{{ url_for('franchise_request') }}" class="btn branch-btn-primary btn-lg fw-bold px-5 py-3 text-nowrap text-uppercase" style="border-radius: 8px;">
+                        Apply for Franchise <i class="fas fa-arrow-right ms-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

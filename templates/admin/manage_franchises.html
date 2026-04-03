@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .admin-panel-card {
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        border: none;
+    }
+    .panel-header-dark {
+        background-color: #1a1a1a;
+        color: #ffffff;
+        border-bottom: 3px solid #d32f2f;
+        border-radius: 12px 12px 0 0 !important;
+        padding: 20px;
+    }
+    .form-control, .form-select {
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        padding: 10px 15px;
+    }
+    .form-control:focus, .form-select:focus {
+        background-color: #ffffff;
+        border-color: #d32f2f;
+        box-shadow: 0 0 0 0.25rem rgba(211, 47, 47, 0.25);
+    }
+    .form-label {
+        font-weight: 600;
+        color: #4a4a4a;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .table-dark-header {
+        background-color: #f8f9fa;
+        color: #333;
+        border-bottom: 2px solid #dee2e6;
+    }
+    .table-dark-header th {
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        padding: 15px;
+        border: none;
+    }
+    .table tbody td {
+        padding: 15px;
+        vertical-align: middle;
+        color: #4a4a4a;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    .action-btn {
+        padding: 5px 12px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+</style>
+
+<div class="container my-5 fade-in">
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-danger pb-3">
+        <h2 class="fw-bold text-white mb-0">Franchise Management</h2>
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-dark text-white fw-bold px-3">Back to Dashboard</a>
+    </div>
+    
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="admin-panel-card">
+                <div class="panel-header-dark">
+                    <h5 class="mb-0 fw-bold">Provision New Location</h5>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" action="{{ url_for('manage_franchises') }}">
+                        <div class="mb-3">
+                            <label class="form-label">System Username <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="username" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Initial Password <span class="text-danger">*</span></label>
+                            <input type="password" class="form-control" name="password" required>
+                        </div>
+                        <hr class="my-4 opacity-25">
+                        <div class="mb-3">
+                            <label class="form-label">Business Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="franchise_name" placeholder="e.g., Chennai Auto Care" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">City / Region <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="location" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Physical Address <span class="text-danger">*</span></label>
+                            <textarea class="form-control" name="address" rows="2" required></textarea>
+                        </div>
+                        <div class="row g-2 mb-4">
+                            <div class="col-6">
+                                <label class="form-label">Latitude</label>
+                                <input type="number" step="any" class="form-control" name="latitude" placeholder="13.0827">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label">Longitude</label>
+                                <input type="number" step="any" class="form-control" name="longitude" placeholder="80.2707">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-danger w-100 py-3 fw-bold">Deploy Franchise</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-8">
+            <div class="admin-panel-card h-100">
+                <div class="panel-header-dark d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold">Active Network</h5>
+                    <span class="badge bg-danger px-3 py-2">{{ franchises|length }} Locations</span>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-dark-header">
+                                <tr>
+                                    <th>UID</th>
+                                    <th>Login ID</th>
+                                    <th>Business Entity</th>
+                                    <th>Region</th>
+                                    <th>Status</th>
+                                    <th class="text-end pe-4">Controls</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for franchise in franchises %}
+                                <tr>
+                                    <td class="fw-bold text-dark">#{{ franchise.id }}</td>
+                                    <td>{{ franchise.username }}</td>
+                                    <td class="fw-bold">{{ franchise.franchise_name }}</td>
+                                    <td>{{ franchise.franchise_location }}</td>
+                                    <td>
+                                        {% if franchise.is_active %}
+                                            <span class="badge bg-success bg-opacity-10 text-success border border-success px-2 py-1">Active</span>
+                                        {% else %}
+                                            <span class="badge bg-danger bg-opacity-10 text-danger border border-danger px-2 py-1">Suspended</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end pe-4 text-nowrap">
+                                        <button class="btn btn-dark action-btn me-1" onclick="resetPassword({{ franchise.id }})">Reset Pass</button>
+                                        <button class="btn btn-outline-danger action-btn" onclick="deleteFranchise({{ franchise.id }})">Delete</button>
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="6" class="text-center py-5">
+                                        <h5 class="text-muted fw-normal mb-0">No franchise locations provisioned yet.</h5>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function resetPassword(franchiseId) {
+    let newPassword = prompt("Please enter the new password for this franchise:");
+    
+    if (newPassword !== null && newPassword.trim() !== "") {
+        fetch(`/admin/reset-franchise-password/${franchiseId}`, { 
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ password: newPassword.trim() })
+        })
+        .then(response => response.json())
+        .then(data => { 
+            if(data.success) {
+                alert('Password reset successfully!'); 
+            } else {
+                alert('Error updating password.');
+            }
+        })
+        .catch(err => alert('Network error occurred.'));
+    }
+}
+
+function deleteFranchise(franchiseId) {
+    if(confirm('WARNING: Are you sure you want to permanently delete this franchise?')) {
+        fetch(`/admin/delete-franchise/${franchiseId}`, { method: 'POST' })
+        .then(response => response.json())
+        .then(data => { 
+            if(data.success) {
+                location.reload(); 
+            }
+        });
+    }
+}
+</script>
+{% endblock %}

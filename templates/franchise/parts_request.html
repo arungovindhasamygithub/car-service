@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .module-card {
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        border: none;
+    }
+    .module-header-dark {
+        background-color: #1a1a1a;
+        color: #ffffff;
+        border-bottom: 3px solid #d32f2f;
+        border-radius: 12px 12px 0 0 !important;
+        padding: 20px;
+    }
+    .form-control {
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        padding: 12px 15px;
+    }
+    .form-control:focus {
+        background-color: #ffffff;
+        border-color: #d32f2f;
+        box-shadow: 0 0 0 0.25rem rgba(211, 47, 47, 0.25);
+    }
+    .form-label {
+        font-weight: 700;
+        color: #4a4a4a;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .request-item {
+        background: #fafafa;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+    }
+    .request-item:hover {
+        background: #ffffff;
+        border-color: #d32f2f;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    .scroll-container {
+        max-height: 400px;
+        overflow-y: auto;
+        padding-right: 5px;
+    }
+    .scroll-container::-webkit-scrollbar { width: 6px; }
+    .scroll-container::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+    .scroll-container::-webkit-scrollbar-thumb { background: #d32f2f; border-radius: 4px; }
+</style>
+
+<div class="container my-5 fade-in">
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-danger pb-3">
+        <h2 class="fw-bold text-white mb-0">Logistics & Part Transfers</h2>
+        <a href="{{ url_for('franchise_dashboard') }}" class="btn btn-outline-dark fw-bold px-3">Back to Dashboard</a>
+    </div>
+    
+    <div class="row g-4 mb-4">
+        <div class="col-lg-4">
+            <div class="module-card h-100">
+                <div class="module-header-dark">
+                    <h5 class="mb-0 fw-bold">Request Inventory</h5>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST">
+                        <div class="mb-4">
+                            <label class="form-label">Part / Product Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="product_name" placeholder="Exact part name or SKU" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Quantity Required <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" name="quantity" placeholder="0" required min="1">
+                        </div>
+                        <button type="submit" class="btn btn-danger w-100 py-3 fw-bold shadow-sm">
+                            Broadcast Request to Network
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="module-card h-100">
+                <div class="module-header-dark d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold">My Sent Requests</h5>
+                    <span class="badge bg-danger">{{ requests|length }}</span>
+                </div>
+                <div class="card-body p-4 scroll-container">
+                    {% if requests %}
+                        <div class="d-flex flex-column gap-3">
+                            {% for req in requests %}
+                            <div class="request-item p-3">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h6 class="fw-bold text-dark mb-0">{{ req.product_name }}</h6>
+                                    <span class="badge bg-{{ 'warning' if req.status == 'Pending' else 'info' if req.status == 'Approved' else 'success' }} text-dark px-2">
+                                        {{ req.status }}
+                                    </span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-end mt-3">
+                                    <div>
+                                        <span class="d-block text-muted small fw-bold text-uppercase">Qty Needed</span>
+                                        <span class="fs-5 fw-bold text-dark">{{ req.quantity }}</span>
+                                    </div>
+                                    <span class="text-muted small" style="font-size: 0.75rem;">{{ req.created_at.strftime('%d %b, %H:%M') }}</span>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <h5 class="text-muted fw-normal mb-2">No active requests.</h5>
+                            <p class="text-secondary small">Parts you request will appear here.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="module-card h-100 border border-danger">
+                <div class="module-header-dark d-flex justify-content-between align-items-center" style="background-color: #d32f2f;">
+                    <h5 class="mb-0 fw-bold">Fulfill Network Requests</h5>
+                    <span class="badge bg-dark">{{ available_requests|length }}</span>
+                </div>
+                <div class="card-body p-4 scroll-container">
+                    {% if available_requests %}
+                        <div class="d-flex flex-column gap-3">
+                            {% for req in available_requests %}
+                            <div class="request-item p-3 border-danger border-opacity-25">
+                                <div class="mb-3">
+                                    <h6 class="fw-bold text-dark mb-1">{{ req.product_name }}</h6>
+                                    <span class="d-block text-muted small">From: <strong class="text-dark">{{ req.from_franchise.franchise_name }}</strong></span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center bg-light p-2 rounded mb-3">
+                                    <span class="text-muted small fw-bold text-uppercase">Requested Qty:</span>
+                                    <span class="fs-5 fw-bold text-danger">{{ req.quantity }}</span>
+                                </div>
+                                <form method="POST" action="{{ url_for('fulfill_request', request_id=req.id) }}">
+                                    <button type="submit" class="btn btn-dark w-100 fw-bold btn-sm py-2">
+                                        Accept & Fulfill
+                                    </button>
+                                </form>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <h5 class="text-muted fw-normal mb-2">Network is fully stocked.</h5>
+                            <p class="text-secondary small">No pending requests from other branches.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

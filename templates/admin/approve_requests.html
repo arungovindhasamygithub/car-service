@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .admin-panel-card {
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        border: none;
+    }
+    .panel-header-dark {
+        background-color: #1a1a1a;
+        color: #ffffff;
+        border-bottom: 3px solid #d32f2f;
+        border-radius: 12px 12px 0 0 !important;
+        padding: 20px;
+    }
+    .request-card {
+        border: 1px solid #e0e0e0;
+        border-left: 4px solid #ffc107;
+        border-radius: 8px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        background-color: #fafafa;
+    }
+    .request-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 15px rgba(0,0,0,0.05);
+        background-color: #ffffff;
+    }
+    .data-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #888;
+        font-weight: 700;
+        margin-bottom: 2px;
+    }
+    .data-value {
+        font-size: 0.95rem;
+        color: #333;
+        font-weight: 500;
+        margin-bottom: 12px;
+    }
+</style>
+
+<div class="container my-5 fade-in">
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-danger pb-3">
+        <h2 class="fw-bold text-white mb-0">Application Queue</h2>
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-white text-white fw-bold px-3">Back to Dashboard</a>
+    </div>
+    
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="admin-panel-card">
+                <div class="panel-header-dark d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold">Pending Franchise Approvals</h5>
+                    <span class="badge bg-warning text-dark px-3 py-2 fw-bold">{{ requests|length }} Review(s) Required</span>
+                </div>
+                <div class="card-body p-4 p-md-5">
+                    {% if requests %}
+                        <div class="d-flex flex-column gap-4">
+                            {% for req in requests %}
+                            <div class="request-card p-4 p-md-4">
+                                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 border-bottom pb-3">
+                                    <h4 class="fw-bold text-dark mb-2 mb-md-0">{{ req.name }}</h4>
+                                    <span class="badge bg-dark text-white p-2 border border-secondary">{{ req.created_at.strftime('%d %b %Y') }}</span>
+                                </div>
+                                
+                                <div class="row g-3">
+                                    <div class="col-sm-6 col-md-4">
+                                        <div class="data-label">Mobile Number</div>
+                                        <div class="data-value">{{ req.mobile }}</div>
+                                    </div>
+                                    <div class="col-sm-6 col-md-4">
+                                        <div class="data-label">Email Address</div>
+                                        <div class="data-value">{{ req.email }}</div>
+                                    </div>
+                                    <div class="col-sm-6 col-md-4">
+                                        <div class="data-label">Target Region</div>
+                                        <div class="data-value">{{ req.location }}</div>
+                                    </div>
+                                    
+                                    <div class="col-12">
+                                        <div class="data-label">Proposed Physical Address</div>
+                                        <div class="data-value">{{ req.address }}</div>
+                                    </div>
+                                    
+                                    <div class="col-sm-6">
+                                        <div class="data-label">Investment Capital</div>
+                                        <div class="data-value fw-bold text-danger">{{ req.investment }}</div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="data-label">Prior Experience</div>
+                                        <div class="data-value">{{ req.experience or 'None specified' }}</div>
+                                    </div>
+                                    
+                                    <div class="col-12">
+                                        <div class="data-label">Statement of Interest</div>
+                                        <div class="data-value fst-italic border-start border-3 ps-3 ms-1 bg-white p-2 rounded">"{{ req.reason }}"</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex flex-column flex-sm-row gap-2 justify-content-end mt-4 pt-3 border-top">
+                                    <button class="btn btn-outline-danger fw-bold px-4" onclick="rejectRequest({{ req.id }})">Reject Application</button>
+                                    <button class="btn btn-success fw-bold px-5" onclick="approveRequest({{ req.id }})">Approve & Provision</button>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <h4 class="text-muted fw-normal mb-3">The application queue is empty.</h4>
+                            <p class="text-secondary">All franchise requests have been processed.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function approveRequest(requestId) {
+    if(confirm('Are you sure you want to approve this application? The system will automatically provision a new franchise account using their mobile number as the initial credentials.')) {
+        fetch(`/admin/approve-franchise/${requestId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.success) {
+                location.reload();
+            }
+        });
+    }
+}
+
+function rejectRequest(requestId) {
+    if(confirm('Are you sure you want to reject this application? This action cannot be undone.')) {
+        fetch(`/admin/reject-franchise/${requestId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.success) {
+                location.reload();
+            }
+        });
+    }
+}
+</script>
+{% endblock %}

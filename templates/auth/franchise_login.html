@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .auth-card {
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    .form-control {
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        padding: 12px 15px;
+        transition: all 0.3s ease;
+    }
+    .form-control:focus {
+        background-color: #ffffff;
+        border-color: #d32f2f;
+        box-shadow: 0 0 0 0.25rem rgba(211, 47, 47, 0.25);
+    }
+</style>
+
+<div class="container my-5 py-5 fade-in">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-lg border-0 auth-card">
+                <div class="card-header bg-dark text-white text-center py-4 border-0">
+                    <h4 class="mb-0 fw-bold">Franchise Portal</h4>
+                </div>
+                <div class="card-body p-4 p-md-5 bg-white">
+                    <p class="text-center text-muted mb-4 small">Enter your authorized credentials to access the management dashboard.</p>
+                    
+                    <form method="POST" action="{{ url_for('franchise_login') }}">
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-muted small text-uppercase tracking-wide">Username</label>
+                            <input type="text" class="form-control" name="username" placeholder="Enter assigned username" required>
+                        </div>
+                        
+                        <div class="mb-5">
+                            <label class="form-label fw-bold text-muted small text-uppercase tracking-wide">Password</label>
+                            <input type="password" class="form-control" name="password" placeholder="Enter secure password" required>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-danger w-100 py-3 fw-bold shadow-sm">
+                            Secure Login
+                        </button>
+                    </form>
+                </div>
+                <div class="card-footer bg-light border-0 text-center py-3">
+                    <small class="text-muted">Don't have credentials? <a href="{{ url_for('franchise_request') }}" class="text-danger text-decoration-none fw-bold">Apply for a franchise</a></small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

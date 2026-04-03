@@ -1,0 +1,818 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Roboto:wght@400;500;700&display=swap');
+
+    :root {
+        --red-accent: #d33c44;
+        --dark-bg: #111;
+        --card-bg: #1a1a1a;
+        --font-heading: 'Montserrat', sans-serif;
+        --font-body: 'Roboto', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+        background-color: var(--dark-bg);
+        color: #fff;
+        font-family: var(--font-body);
+        overflow-x: hidden;
+    }
+
+    /* --- COMMON SECTION HEADERS --- */
+    .section-header { text-align: center; margin-bottom: 3rem; position: relative; z-index: 2; }
+    .section-sub { color: var(--red-accent); font-weight: 700; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 10px; font-size: 0.9rem; }
+    .section-title { font-family: var(--font-heading); color: #fff; font-weight: 900; text-transform: uppercase; font-size: 2.5rem; margin-bottom: 0; }
+
+    /* --- COMMON BACKGROUND OVERLAYS --- */
+    .bg-overlay { position: relative; }
+    .bg-overlay::before { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.85); z-index: 1; }
+    .bg-overlay > .container { position: relative; z-index: 2; }
+
+    /* --- 1. TOP BAR & HEADER --- */
+    .top-bar { background-color: rgba(0,0,0,0.9); border-bottom: 1px solid rgba(211, 60, 68, 0.3); font-size: 0.8rem; padding: 10px 0; }
+    .main-nav { background: rgba(17, 17, 17, 0.95); padding: 15px 0; position: sticky; top: 0; z-index: 999; border-bottom: 2px solid #333; }
+    .nav-logo { width: 50px; height: 50px; border: 2px solid var(--red-accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--red-accent); font-weight: 900; font-size: 1.5rem; }
+    .nav-links a { color: white; text-decoration: none; margin-left: 30px; font-weight: 600; font-size: 0.85rem; text-transform: uppercase; transition: 0.3s; }
+    .nav-links a:hover { color: var(--red-accent); }
+
+    /* --- 2. HERO SECTION --- */
+    .hero-wrapper {
+        position: relative;
+        background-color: #000;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        min-height: 80vh; 
+        display: flex; 
+        align-items: center; 
+        overflow: hidden;
+    }
+    
+    .hero-container {
+        position: relative;
+        z-index: 10;
+        width: 100%;
+       
+    }
+
+    .hero-wrapper::before {
+        content: ''; position: absolute; inset: 0;
+        background: radial-gradient(circle at 30% 50%, rgba(211, 60, 68, 0.4) 0%, rgba(0,0,0,0.85) 100%);
+        z-index: 1;
+    }
+
+    .hero-auth-container { position: absolute; top: 100px; right: 580px; z-index: 20; display: flex; gap: 15px; }
+    .btn-auth { border-radius: 25px; padding: 8px 25px; font-size: 0.8rem; font-weight: bold; border: none; color: white; cursor: pointer; text-decoration: none; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+    .btn-auth:hover { transform: translateY(-2px); color: white; }
+    .btn-signup { background-color: var(--red-accent); border: 1px solid var(--red-accent); }
+    .btn-login { background-color: transparent; border: 1px solid rgba(255,255,255,0.5); backdrop-filter: blur(5px); }
+    .btn-login:hover { border-color: var(--red-accent); color: var(--red-accent); }
+
+    /* Hero Left Content Column */
+    .hero-content-col { display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 20px; }
+    
+    .hero-main-title { font-family: var(--font-heading); font-size: 3.5rem; font-weight: 900; text-transform: uppercase; margin: 0; text-shadow: 2px 2px 5px rgba(0,0,0,0.8); line-height: 1.1; }
+    
+    .location-select-wrapper { border: 1px solid rgba(255,255,255,0.4); border-radius: 25px; padding: 5px 15px; display: flex; align-items: center; background: transparent; margin-bottom: 5px; }
+    .location-select { background: transparent; color: white; border: none; font-weight: bold; text-transform: uppercase; font-size: 0.75rem; outline: none; appearance: none; cursor: pointer; padding-right: 5px; }
+    .location-select option { background: #222; color: white; }
+    
+    .hero-sub { font-family: var(--font-heading); font-size: 2.2rem; color: var(--red-accent); text-shadow: 2px 2px 5px rgba(0,0,0,0.8); line-height: 1; font-weight: 900; text-transform: uppercase; margin: 0; }
+    
+    .welcome-pill { background-color: var(--red-accent); color: white; padding: 10px 30px; border-radius: 25px; font-weight: 900; font-size: 0.95rem; box-shadow: 0 5px 15px rgba(211, 60, 68, 0.4); margin: 0; }
+    
+    .trusted-text { font-family: var(--font-heading); font-size: 3.2rem; font-weight: 900; line-height: 1.1; text-shadow: 2px 2px 5px rgba(0,0,0,0.8); margin: 0; text-transform: uppercase; }
+    .trusted-text span { color: var(--red-accent); }
+    
+    .hero-desc { font-size: 0.95rem; max-width: 480px; line-height: 1.7; font-weight: 500; text-shadow: 1px 1px 3px rgba(0,0,0,0.8); margin: 0; }
+
+    /* Hero Right Content Column */
+    .right-hero-content { position: relative; display: flex; justify-content: center; align-items: center; height: 100%; width: 100%; }
+    
+    .appointment-box { 
+        position: absolute; 
+        top: 35%; 
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: rgba(211, 60, 68, 0.85); /* Default Color */
+        border-radius: 25px; 
+        padding: 20px 40px; 
+        text-align: center; 
+        z-index: 15; 
+        width: 85%;
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(255,255,255,0.1);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+        transition: background-color 0.4s ease; /* Added for smooth color transition */
+    }
+    .appt-label { font-family: var(--font-heading); font-weight: 900; font-size: 0.9rem; letter-spacing: 1px; margin-bottom: 5px; text-transform: uppercase; opacity: 0.9;}
+    #emergency-phone { font-size: 2.5rem; font-weight: 900; line-height: 1; display: flex; justify-content: center; align-items: center; gap: 12px; margin: 8px 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.4);}
+    .appt-sub { font-size: 0.85rem; font-weight: bold; opacity: 0.9; }
+
+    .transformer-img { width: 100%; max-width: 500px; height: auto; object-fit: contain; filter: drop-shadow(15px 15px 25px rgba(0,0,0,0.9)); position: relative; z-index: 10; margin-top: 60px;}
+
+    /* --- MOBILE RESPONSIVENESS UPDATES --- */
+    @media (max-width: 991px) { 
+        .hero-wrapper { min-height: auto; padding: 120px 0 60px 0; } 
+        .hero-content-col { align-items: center; text-align: center; }
+        .appointment-box { position: relative; top: 0; left: 0; transform: none; width: 100%; margin-bottom: 30px; }
+        .right-hero-content { flex-direction: column; padding-top: 50px; }
+        .transformer-img { margin-top: 0; }
+        .hero-main-title { font-size: 2.8rem; }
+        .trusted-text { font-size: 2.5rem; }
+        #emergency-phone { font-size: 2.2rem; }
+    }
+
+    @media (max-width: 576px) {
+        .hero-main-title { font-size: 2rem; }
+        .trusted-text { font-size: 1.8rem; }
+        .hero-desc { font-size: 0.9rem; }
+        .appointment-box { padding: 15px 20px; }
+        #emergency-phone { font-size: 1.5rem; }
+        .section-title { font-size: 1.8rem; }
+    }
+
+    /* --- 3. DARK STATS BAR --- */
+    .stats-bar { background-color: #0a0a0a; position: relative; z-index: 5; padding: 50px 0; border-bottom: 4px solid var(--red-accent); border-top: 1px solid #333;}
+    .stat-box { padding: 0 30px; display: flex; flex-direction: column; align-items: center; }
+    .stat-box h3 { font-family: var(--font-heading); font-weight: 900; font-size: 1.4rem; margin-bottom: 10px; }
+    .stat-box p { font-size: 0.95rem; line-height: 1.5; opacity: 0.75; margin: 0; max-width: 280px; }
+    .stat-icon { font-size: 2.5rem; margin-bottom: 15px; color: var(--red-accent); }
+    .stat-divider { border-right: 1px solid #333; }
+
+    @media (max-width: 991px) { 
+        .stat-divider { border-right: none; border-bottom: 1px solid #333; padding-bottom: 30px; margin-bottom: 30px; }
+    }
+
+    /* --- BRANDS SECTION --- */
+    .brands-section { background-color: var(--card-bg); padding: 80px 0; border-bottom: 2px solid #333; }
+    .brand-logo-card {
+        background: #fff; border-radius: 8px; padding: 15px; display: flex; align-items: center; justify-content: center; height: 90px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.5); transition: all 0.3s ease; border: 2px solid transparent;
+    }
+    .brand-logo-card:hover { border-color: var(--red-accent); transform: translateY(-5px); box-shadow: 0 8px 25px rgba(211, 60, 68, 0.3); }
+    .brand-logo-card img { width: 100%; height: 100%; max-height: 50px; object-fit: contain; filter: grayscale(100%) contrast(1.2); transition: 0.3s; }
+    .brand-logo-card:hover img { filter: grayscale(0%) contrast(1); }
+
+    /* --- SERVICES SECTION --- */
+    .services-bg { background: url('https://images.unsplash.com/photo-1758767355046-1986dda2d967?w=1920&auto=format&fit=crop&q=80') center/cover fixed; padding: 80px 0; border-bottom: 2px solid #333; }
+    .service-card { border: 2px solid #333; position: relative; overflow: hidden; height: 300px; border-radius: 8px; }
+    .service-card img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; filter: grayscale(50%); }
+    .service-card:hover { border-color: var(--red-accent); }
+    .service-card:hover img { filter: grayscale(0%); transform: scale(1.05); }
+    .service-card-title { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.95)); padding: 20px; text-align: left; font-family: var(--font-heading); font-weight: bold; border-bottom: 4px solid var(--red-accent); }
+    
+    /* --- WHY US SECTION --- */
+    .why-us-bg { background: url('https://images.unsplash.com/photo-1727893119356-1702fe921cf9?w=1920&auto=format&fit=crop&q=80') center/cover; padding: 80px 0; border-bottom: 2px solid #333; }
+    .why-board { background: var(--card-bg); border: 4px solid var(--red-accent); padding: 30px; text-align: center; box-shadow: 10px 10px 30px rgba(0,0,0,0.8); position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; z-index: 5; }
+    .feature-icon-red { width: 60px; height: 60px; background: var(--red-accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin-right: 20px; flex-shrink: 0; border: 2px solid white; }
+    
+    /* --- ABOUT SECTION & STATS --- */
+    .about-section { background: #0f0f0f; position: relative; overflow: hidden; padding: 80px 0; border-bottom: 2px solid #333; }
+    .about-red-shape-top { position: absolute; top: 0; left: 0; width: 60%; height: 5px; background: var(--red-accent); }
+    .about-red-shape-bottom { position: absolute; bottom: 0; right: 0; width: 50%; height: 5px; background: var(--red-accent); }
+    
+    .stat-item { background: #1a1a1a; padding: 20px 15px; border-radius: 8px; border: 1px solid var(--red-accent); flex: 1 1 140px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.5);}
+    .stat-number { font-family: var(--font-heading); font-size: 2.2rem; font-weight: 900; color: var(--red-accent); line-height: 1; }
+    .stat-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: #ccc; margin-top: 8px; font-weight: bold;}
+
+    /* --- ART OF SERVICES --- */
+    .art-services { background: url('https://images.unsplash.com/photo-1727893153491-392fd2d1c721?w=1920&auto=format&fit=crop&q=80') center/cover; padding: 80px 0; border-bottom: 2px solid #333; }
+    .art-box { border: 1px solid #444; padding: 30px; text-align: left; position: relative; background: rgba(0,0,0,0.7); height: 100%; transition: 0.3s; border-radius: 8px; border-bottom: 3px solid transparent; backdrop-filter: blur(3px); }
+    .art-box:hover { border-color: #555; border-bottom-color: var(--red-accent); background: rgba(0,0,0,0.9); }
+    .art-icon { position: absolute; bottom: 25px; right: 25px; font-size: 2.5rem; color: #555; transition: 0.3s; }
+    .art-box:hover .art-icon { color: var(--red-accent); }
+    
+    /* --- PROCESS SECTION --- */
+    .process-section { background-color: var(--card-bg); padding: 80px 0; border-bottom: 2px solid #333; }
+    .process-circle { width: 80px; height: 80px; background: var(--red-accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-size: 2rem; position: relative; border: 2px solid white; z-index: 2; box-shadow: 0 5px 15px rgba(211, 60, 68, 0.4); }
+    .process-num { position: absolute; top: -10px; right: -10px; width: 30px; height: 30px; background: white; color: var(--red-accent); border-radius: 50%; font-weight: 900; display: flex; align-items: center; justify-content: center; font-size: 1rem; box-shadow: 0 2px 5px rgba(0,0,0,0.5);}
+    .dashed-arrow { position: absolute; top: 38px; right: -80px; width: 80px; height: 2px; border-top: 3px dashed var(--red-accent); z-index: 1; }
+    .dashed-arrow::after { content: '\f105'; font-family: 'Font Awesome 5 Free'; font-weight: 900; position: absolute; right: -10px; top: -18px; font-size: 24px; color: var(--red-accent); }
+    
+    /* --- APPOINTMENT FORM --- */
+    .appt-form-bg { background: url('https://images.unsplash.com/photo-1727893294198-e85137574f5b?w=1920&auto=format&fit=crop&q=80') center/cover; padding: 80px 0; }
+    .form-container { background: rgba(26, 26, 26, 0.95); border: 2px solid var(--red-accent); border-radius: 15px; padding: 40px; position: relative; z-index: 2; box-shadow: 0 10px 40px rgba(0,0,0,0.8); color: #fff;}
+    .custom-input { width: 100%; padding: 12px; border: 1px solid #444; border-radius: 5px; margin-bottom: 15px; background: #111; color: #fff;}
+    .custom-input:focus { outline: none; border-color: var(--red-accent); }
+    .checkbox-container { display: flex; align-items: center; margin-bottom: 15px; cursor: pointer; }
+    .custom-checkbox { width: 22px; height: 22px; border: 1px solid #555; background: #111; border-radius: 4px; display: inline-block; position: relative; margin-right: 12px; }
+    .checkbox-container input[type="checkbox"] { display: none; }
+    .checkbox-container input[type="checkbox"]:checked + .custom-checkbox { border-color: var(--red-accent); background: var(--red-accent); }
+    .checkbox-container input[type="checkbox"]:checked + .custom-checkbox::after { content: ''; position: absolute; left: 6px; top: 2px; width: 6px; height: 12px; border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+    
+    /* --- CLIENT REVIEWS --- */
+    .client-section { background: url('https://images.unsplash.com/photo-1766637885444-2148f623d822?w=1920&auto=format&fit=crop&q=80') center/cover fixed; padding: 80px 0; border-top: 4px solid var(--red-accent); border-bottom: 2px solid #333;}
+    .client-card { background: rgba(26, 26, 26, 0.95); color: #fff; padding: 40px 30px; height: 100%; border-radius: 8px; border: 1px solid #333; position: relative; transition: 0.3s; backdrop-filter: blur(5px); }
+    .client-card:hover { border-color: var(--red-accent); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.8); }
+    .client-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--red-accent); border-top-left-radius: 8px; border-top-right-radius: 8px; }
+    .client-img { width: 70px; height: 70px; border: 3px solid var(--red-accent); object-fit: cover; }
+    
+    /* --- MAP & FOOTER --- */
+    .map-section { background: #111; border-top: 4px solid var(--red-accent); }
+    .map-container iframe { width: 100%; height: 350px; border: 0; display: block; filter: grayscale(100%) invert(90%) contrast(1.2); }
+    
+    .footer-section { background-color: #050505; padding-top: 70px; border-top: 1px solid #222; }
+    .footer-links li { margin-bottom: 12px; }
+    .footer-links a { color: rgba(255,255,255,0.7); text-decoration: none; transition: 0.3s; font-size: 0.95rem; }
+    .footer-links a:hover { color: var(--red-accent); padding-left: 5px; }
+    .footer-bottom { background-color: #000; padding: 20px 0; border-top: 1px solid #222; margin-top: 50px;}
+</style>
+
+<div class="top-bar text-white">
+    <div class="container d-flex justify-content-center justify-content-md-between flex-wrap gap-3">
+        <div><i class="fas fa-phone-alt me-2 text-danger"></i> Contact : <span id="top-phone">9842356799</span></div>
+        <div><i class="fas fa-envelope me-2 text-danger"></i> mechzoneautomotive.pvt.ltd@gmail.com</div>
+        <div><i class="fas fa-map-marker-alt me-2 text-danger"></i> <span id="top-location">Kanchipuram, Tamil Nadu</span></div>
+    </div>
+</div>
+
+<nav class="main-nav">
+    <div class="container d-flex justify-content-between align-items-center">
+        <div class="nav-logo">
+            <span style="font-family: var(--font-heading); letter-spacing: -1px;">AE</span>
+        </div>
+        <div class="nav-links d-none d-md-flex align-items-center">
+            <a href="#home"><i class="fas fa-home me-1 text-danger"></i> HOME</a>
+            <a href="#about"><i class="fas fa-users-cog me-1 text-danger"></i> ABOUT</a>
+            <a href="#services"><i class="fas fa-cogs me-1 text-danger"></i> SERVICES</a>
+            <a href="#contact"><i class="fas fa-calendar-alt me-1 text-danger"></i> BOOK APPOINTMENT</a>
+        </div>
+    </div>
+</nav>
+
+<div class="hero-wrapper" style="background-image: url('{{ url_for('static', filename='img/hero bg.png') }}');">
+    
+   
+
+    <section class="hero-container container" id="home">
+        <div class="row align-items-center justify-content-between w-100">
+            
+            <div class="col-lg-6 hero-content-col">
+                <h1 class="hero-main-title">SRI SARAVANAN AUTO WORKS</h1>
+                
+                <div class="location-select-wrapper">
+                    <select class="location-select" id="city-selector" onchange="updateLocationData()">
+                        <option value="Kanchipuram">KANCHIPURAM</option>
+                        <option value="Chennai">CHENNAI</option>
+                        <option value="Thiruvallur">THIRUVALLUR</option>
+                        <option value="Vellore">VELLORE</option>
+                        <option value="Salem">SALEM</option>
+                        <option value="Coimbatore">COIMBATORE</option>
+                        <option value="Madhurai">MADHURAI</option>
+                    </select>
+                    <i class="fas fa-chevron-down text-white" style="font-size: 0.7rem;"></i>
+                </div>
+                
+              
+                
+                <h2 class="trusted-text">YOUR <span>TRUSTED</span><br>REPAIR SHOP</h2>
+                
+                <p class="hero-desc">
+                    We offer reliable and efficient services to ensure your vehicle is always in top condition. Let us take care of your car, so you can focus on what matters most.
+                </p>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="right-hero-content">
+                    <div class="appointment-box text-white">
+                        <div class="appt-label">MAKE THE APPOINTMENT</div>
+                        <div id="emergency-phone">
+                            <i class="fas fa-phone-volume text-dark"></i>
+                            <span style="color: #ffffff;">9842356799</span>
+                        </div>
+                        <div class="appt-sub">24-Hour Emergency Assistance</div>
+                    </div>
+                    
+                    <img src="{{ url_for('static', filename='img/hero img.png') }}" class="transformer-img" alt="Transformer Hero">
+                </div>
+                
+            </div>
+            
+        </div>
+         <div class="hero-auth-container d-none d-lg-flex">
+        <a href="{{ url_for('franchise_login') }}" class="btn-auth btn-signup"><i class="fas fa-plus me-2"></i> Franchise</a>
+        <a href="{{ url_for('customer_login') }}" class="btn-auth btn-login">Customer</a>
+    </div>
+    </section>
+</div>
+
+<section class="stats-bar">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-4 col-md-12 text-white text-center stat-divider stat-box mb-4 mb-lg-0">
+                <i class="fas fa-tags stat-icon"></i>
+                <h3 class="mb-2 text-uppercase">BEST PRICES</h3>
+                <p>All mechanical repairs and services are available at affordable rates.</p>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 text-white text-center stat-divider stat-box mb-4 mb-lg-0">
+                <i class="fas fa-shield-alt stat-icon"></i>
+                <h3 class="mb-2 text-uppercase">100% GUARANTEE</h3>
+                <p>All of our repairs and services come with a guarantee period.</p>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 text-white text-center stat-box mb-4 mb-lg-0">
+                <i class="fas fa-user-check stat-icon"></i>
+                <h3 class="mb-2 text-uppercase">CERTIFIED MECHANICS</h3>
+                <p>All of our mechanics are qualified and are regularly trained.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="brands-section">
+    <div class="container">
+        <div class="section-header">
+            <h6 class="section-sub">/// BRANDS WE SERVE ///</h6>
+            <h2 class="section-title">SUPPORTED VEHICLES</h2>
+        </div>
+        
+        <div class="row justify-content-center align-items-center g-3 g-md-4 mt-4">
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2"><div class="brand-logo-card"><img src="https://i.pinimg.com/1200x/2d/97/f6/2d97f649fd53944f1cbcf83140c0d1b4.jpg" alt="Tata"></div></div>
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2"><div class="brand-logo-card"><img src="https://i.pinimg.com/736x/1e/bc/5e/1ebc5eca7871eb7c098d9e009e0cade3.jpg" alt="Maruti Suzuki"></div></div>
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2"><div class="brand-logo-card"><img src="https://i.pinimg.com/736x/63/04/13/6304133f66784db43f9a83a3ea255def.jpg" alt="Honda"></div></div>
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2"><div class="brand-logo-card"><img src="https://i.pinimg.com/1200x/09/e6/ed/09e6ed0cb4df8160fa4a5d82b4399599.jpg" alt="Mahindra"></div></div>
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2"><div class="brand-logo-card"><img src="https://i.pinimg.com/1200x/0f/f1/b8/0ff1b8acfbc8559be650bf445699dceb.jpg" alt="Toyota"></div></div>
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2"><div class="brand-logo-card"><img src="https://i.pinimg.com/1200x/4c/3e/ee/4c3eee003b393b0f16cb5bb3fc931eb3.jpg" alt="Ford"></div></div>
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2"><div class="brand-logo-card"><img src="https://i.pinimg.com/736x/7f/7e/e2/7f7ee2256412239890bf94e52f68b083.jpg" alt="Hyundai"></div></div>
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2"><div class="brand-logo-card"><img src="https://i.pinimg.com/1200x/30/74/1b/30741ba5dd1db6c9e550d526e643363e.jpg" alt="Kia"></div></div>
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2"><div class="brand-logo-card"><img src="https://i.pinimg.com/736x/77/4e/e1/774ee176433f93b247e71a926a9dac15.jpg" alt="Renault"></div></div>
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2"><div class="brand-logo-card"><img src="https://i.pinimg.com/736x/59/a5/26/59a526a3f6146549714f829936da41b4.jpg" alt="Nissan"></div></div>
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2"><div class="brand-logo-card"><img src="https://i.pinimg.com/736x/09/0a/e8/090ae8036515bca14231f6b0cabce042.jpg" alt="Volkswagen"></div></div>
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2"><div class="brand-logo-card"><img src="https://i.pinimg.com/736x/ad/d1/03/add1036c70e7abbda96af75b11abafeb.jpg" alt="Skoda"></div></div>
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2"><div class="brand-logo-card"><img src="https://i.pinimg.com/1200x/f2/bb/5d/f2bb5d328039a669ccd0dc1162c7124f.jpg" alt="MG Motor"></div></div>
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2"><div class="brand-logo-card"><img src="https://i.pinimg.com/1200x/a3/0b/b7/a30bb7eb1638fe27330fd1e0b9c87aae.jpg" alt="Jeep"></div></div>
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2"><div class="brand-logo-card"><img src="https://i.pinimg.com/736x/d5/2d/bb/d52dbb929ad9353d39537f01a60fa6f0.jpg" alt="BMW"></div></div>
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2"><div class="brand-logo-card"><img src="https://i.pinimg.com/736x/4c/34/ee/4c34eefba221546293d1032ae967eddc.jpg" alt="Audi"></div></div>
+        </div>
+    </div>
+</section>
+
+<section class="services-bg bg-overlay" id="services">
+    <div class="container pt-3">
+        <div class="section-header">
+            <h6 class="section-sub">/// COMPREHENSIVE AUTO REPAIR ///</h6>
+            <h2 class="section-title">OUR SERVICES</h2>
+        </div>
+        
+        <div class="row g-4 justify-content-center">
+            <div class="col-lg-2 col-md-4 col-sm-6"><div class="service-card"><img src="https://images.unsplash.com/photo-1517524206127-48bbd363f3d7?w=600&auto=format&fit=crop&q=60" alt="Engine"><div class="service-card-title text-white">Engine Diagnostics & Repair</div></div></div>
+            <div class="col-lg-2 col-md-4 col-sm-6"><div class="service-card"><img src="https://images.unsplash.com/photo-1579966434689-366396b4963c?w=600&auto=format&fit=crop&q=60" alt="Transmission"><div class="service-card-title text-white">Transmission Repair</div></div></div>
+            <div class="col-lg-2 col-md-4 col-sm-6"><div class="service-card"><img src="https://images.unsplash.com/photo-1599256872237-5dcc0fbe9668?w=600&auto=format&fit=crop&q=60" alt="Electrical"><div class="service-card-title text-white">Electrical System & Repair</div></div></div>
+            <div class="col-lg-2 col-md-4 col-sm-6"><div class="service-card"><img src="https://plus.unsplash.com/premium_photo-1661964291917-b20c2648fac6?w=600&auto=format&fit=crop&q=60" alt="Denting"><div class="service-card-title text-white">Denting & Smash Repair</div></div></div>
+            <div class="col-lg-2 col-md-4 col-sm-6"><div class="service-card"><img src="https://images.unsplash.com/photo-1652270625079-83dd767498db?w=600&auto=format&fit=crop&q=60" alt="Paint"><div class="service-card-title text-white">Paint Correction</div></div></div>
+        </div>
+        
+        <div class="text-center">
+            <button class="btn btn-danger rounded-pill px-5 py-3 mt-5 fw-bold text-uppercase" style="border: 2px solid white;">LEARN MORE ABOUT SERVICES</button>
+        </div>
+    </div>
+</section>
+
+<section class="why-us-bg bg-overlay text-white">
+    <div class="container">
+        <div class="section-header">
+            <h6 class="section-sub">/// WHY CHOOSE US ///</h6>
+            <h2 class="section-title">WE'RE HERE FOR WHATEVER YOU NEED</h2>
+        </div>
+        
+        <div class="row align-items-center mt-5 pt-4">
+            <div class="col-lg-4 text-center position-relative mb-5 mb-lg-0">
+                <img src="https://images.unsplash.com/photo-1771340012378-3c86cb649193?w=600&auto=format&fit=crop&q=60" class="position-relative" style="width:280px; height:280px; object-fit:cover; z-index: 2; border: 4px solid #111;" alt="Mechanic Manager">
+            </div>
+            
+            <div class="col-lg-8">
+                <div class="row g-5 ps-lg-4">
+                    <div class="col-md-6 d-flex align-items-start">
+                        <div class="feature-icon-red"><i class="fas fa-hand-holding-usd text-white"></i></div>
+                        <div>
+                            <h4 class="font-heading fw-bold text-uppercase mb-2 fs-5 text-white">COMPETITIVE PRICING</h4>
+                            <p class="small text-light opacity-75 lh-lg">We understand auto repair can be expensive, which is why we offer competitive pricing for all services. We provide affordable solutions without sacrificing quality.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 d-flex align-items-start">
+                        <div class="feature-icon-red"><i class="fas fa-tachometer-alt text-white"></i></div>
+                        <div>
+                            <h4 class="font-heading fw-bold text-uppercase mb-2 fs-5 text-white">FAST & EFFICIENT</h4>
+                            <p class="small text-light opacity-75 lh-lg">We know your time is valuable. We work quickly to get your car back on the road ASAP. Our team is dedicated to timely repairs without compromising quality.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 d-flex align-items-start">
+                        <div class="feature-icon-red"><i class="fas fa-award text-white"></i></div>
+                        <div>
+                            <h4 class="font-heading fw-bold text-uppercase mb-2 fs-5 text-danger">EXPERIENCED TECHNICIANS</h4>
+                            <p class="small text-light opacity-100 lh-lg" style="border-bottom: 1px dashed var(--red-accent); padding-bottom: 5px;">Our team is highly trained and experienced. We only hire certified professionals who have a proven track record of delivering high-quality work.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 d-flex align-items-start">
+                        <div class="feature-icon-red"><i class="fas fa-cogs text-white"></i></div>
+                        <div>
+                            <h4 class="font-heading fw-bold text-uppercase mb-2 fs-5 text-white">HIGH QUALITY PARTS</h4>
+                            <p class="small text-light opacity-75 lh-lg">We only use top-quality parts and equipment. We believe using top-of-the-line components ensures the longevity and reliability of your vehicle.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="about-section text-white" id="about">
+    <div class="about-red-shape-top"></div>
+    <div class="about-red-shape-bottom"></div>
+    
+    <div class="container position-relative z-index-2 pt-4">
+        <div class="row align-items-center">
+            
+            <div class="col-lg-6 text-center text-lg-start mb-5 mb-lg-0 pe-lg-5">
+                <div class="section-header text-center text-lg-start mb-4">
+                    <h6 class="section-sub text-start">/// ABOUT US ///</h6>
+                    <h2 class="section-title text-start text-danger" style="font-size: 2.2rem;">OUR REPUTATION SPEAKS FOR ITSELF</h2>
+                </div>
+                
+                <div class="mt-4 mb-3 d-inline-block p-2 bg-dark" style="border: 2px solid var(--red-accent);">
+                    <img src="https://plus.unsplash.com/premium_photo-1682141708282-3a4f7023e1bb?w=600&auto=format&fit=crop&q=60" alt="Mechanics Working" class="img-fluid w-100">
+                </div>
+                
+                <p class="lh-lg text-light opacity-75 mt-2 mb-4">
+                    At <span class="text-danger fw-bold">SRI SARAVANAN AUTO WORKS</span> in <span class="text-white fw-bold">Kanchipuram</span>, we are dedicated to providing top-notch auto repair services. Our skilled technicians fix your vehicle's issues effectively. With <span class="text-danger fw-bold">30 years</span> of experience, we ensure complete customer satisfaction.
+                </p>
+
+                <button class="btn btn-danger rounded-pill px-5 py-2 text-uppercase fw-bold border-white">LEARN MORE</button>
+            </div>
+            
+            <div class="col-lg-6 d-flex flex-column align-items-center align-items-lg-end">
+                
+                <div class="d-flex flex-wrap gap-3 justify-content-center justify-content-lg-end w-100 mb-4">
+                    <div class="stat-item">
+                        <div class="stat-number">5+</div>
+                        <div class="stat-label">Years Experience</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">5K+</div>
+                        <div class="stat-label">Services Done</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">16+</div>
+                        <div class="stat-label">Brands Supported</div>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-wrap justify-content-center justify-content-lg-end gap-3 w-100">
+                    <img src="https://i.pinimg.com/736x/6b/89/ef/6b89ef5183942981510b141ca0f9baba.jpg" style="width:140px; height:240px; object-fit:cover; border: 3px solid var(--red-accent);" alt="Mechanic Tools">
+                  
+                    <img src="https://media.istockphoto.com/id/1165311626/photo/mechanic-using-a-ratchet-wrench.webp?a=1&b=1&s=612x612&w=0&k=20&c=rweEFgtm2hzgWcmCHeTDn8IjksHRLtE5WrANSG-V4sc=" style="width:140px; height:240px; object-fit:cover; border: 3px solid var(--red-accent);" alt="Mechanic Tools">
+                    <img src="https://i.pinimg.com/736x/88/01/0c/88010cc1a119503bc7eff4dc391dcc99.jpg" style="width:140px; height:240px; object-fit:cover; border: 3px solid var(--red-accent);" alt="Mechanic Tools">
+                
+                    <img src="https://images.unsplash.com/photo-1562259929-b4e1fd3aef09?auto=format&fit=crop&w=300&q=80" style="width:140px; height:240px; object-fit:cover; border: 3px solid var(--red-accent);" alt="Mechanic Checking">
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="art-services bg-overlay text-white">
+    <div class="container pt-3">
+        <div class="section-header">
+            <h6 class="section-sub">/// WHAT WE DO ///</h6>
+            <h2 class="section-title">THE ART OF SERVICES</h2>
+        </div>
+        
+        <div class="row g-4 mt-2">
+            <div class="col-md-6 col-lg-4">
+                <div class="art-box">
+                    <h4 class="font-heading fw-bold fs-6 text-uppercase text-white">CUSTOMIZATION & MODIFICATION</h4>
+                    <p class="small text-light opacity-75 mt-3 mb-4 lh-lg">We make customizations and modifications to your car with the best quality services.</p>
+                    <a href="#" class="text-danger fw-bold text-decoration-none small text-uppercase">READ MORE <i class="fas fa-angle-double-right ms-1"></i></a>
+                    <i class="fas fa-car art-icon"></i>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="art-box">
+                    <h4 class="font-heading fw-bold fs-6 text-uppercase text-white">RESTORATION & SERVICE</h4>
+                    <p class="small text-light opacity-75 mt-3 mb-4 lh-lg">We turn non-running cars into fully functional vehicles in pristine condition.</p>
+                    <a href="#" class="text-danger fw-bold text-decoration-none small text-uppercase">READ MORE <i class="fas fa-angle-double-right ms-1"></i></a>
+                    <i class="fas fa-wrench art-icon"></i>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="art-box">
+                    <h4 class="font-heading fw-bold fs-6 text-uppercase text-white">PERFORMANCE UPGRADES</h4>
+                    <p class="small text-light opacity-75 mt-3 mb-4 lh-lg">Extend your engine's life and performance with professional boost upgrades at our shop.</p>
+                    <a href="#" class="text-danger fw-bold text-decoration-none small text-uppercase">READ MORE <i class="fas fa-angle-double-right ms-1"></i></a>
+                    <i class="fas fa-chart-line art-icon"></i>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="art-box">
+                    <h4 class="font-heading fw-bold fs-6 text-uppercase text-white">CUSTOM PAINT & GRAPHICS</h4>
+                    <p class="small text-light opacity-75 mt-3 mb-4 lh-lg">We provide custom paint matching and graphic designs using your favorite colors.</p>
+                    <a href="#" class="text-danger fw-bold text-decoration-none small text-uppercase">READ MORE <i class="fas fa-angle-double-right ms-1"></i></a>
+                    <i class="fas fa-paint-roller art-icon"></i>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="art-box">
+                    <h4 class="font-heading fw-bold fs-6 text-uppercase text-white">FABRICATION & WELDING</h4>
+                    <p class="small text-light opacity-75 mt-3 mb-4 lh-lg">We fix spoilers, execute old car body modifications, denting works, and custom racks.</p>
+                    <a href="#" class="text-danger fw-bold text-decoration-none small text-uppercase">READ MORE <i class="fas fa-angle-double-right ms-1"></i></a>
+                    <i class="fas fa-fire art-icon"></i>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="art-box">
+                    <h4 class="font-heading fw-bold fs-6 text-uppercase text-white">ELECTRICAL & WIRING WORK</h4>
+                    <p class="small text-light opacity-75 mt-3 mb-4 lh-lg">Complete electrical diagnostics, wire harness modifications, and interior lighting jobs.</p>
+                    <a href="#" class="text-danger fw-bold text-decoration-none small text-uppercase">READ MORE <i class="fas fa-angle-double-right ms-1"></i></a>
+                    <i class="fas fa-car-battery art-icon"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="process-section text-white">
+    <div class="container">
+        <div class="section-header">
+            <h6 class="section-sub">/// HOW IT WORKS ///</h6>
+            <h2 class="section-title">OUR BUSINESS PROCESS</h2>
+        </div>
+        
+        <div class="row justify-content-center px-lg-4 mt-5">
+            <div class="col-md-4 text-center position-relative mb-5">
+                <div class="process-circle">
+                    <div class="process-num">1</div>
+                    <i class="far fa-calendar-alt text-white"></i>
+                    <div class="dashed-arrow d-none d-md-block"></div>
+                </div>
+                <h5 class="font-heading fw-bold text-uppercase fs-5 mt-4 text-danger">Schedule Appointment</h5>
+                <p class="small text-light opacity-75 mt-3 px-1 px-lg-3 lh-lg">The first step in getting your car repaired at autoworks is to schedule an appointment. You can do this by phone, online, or by visiting our shop in person.</p>
+            </div>
+            
+            <div class="col-md-4 text-center position-relative mb-5">
+                <div class="process-circle">
+                    <div class="process-num">2</div>
+                    <i class="fas fa-car-side text-white"></i>
+                    <div class="dashed-arrow d-none d-md-block"></div>
+                </div>
+                <h5 class="font-heading fw-bold text-uppercase fs-5 mt-4 text-danger">Diagnostic And Inspection</h5>
+                <p class="small text-light opacity-75 mt-3 px-1 px-lg-3 lh-lg">When you bring your car in for repair, our technicians will perform a comprehensive diagnostic and inspection to determine the root cause of any issues.</p>
+            </div>
+            
+            <div class="col-md-4 text-center position-relative mb-5">
+                <div class="process-circle">
+                    <div class="process-num">3</div>
+                    <i class="fas fa-wrench text-white"></i>
+                </div>
+                <h5 class="font-heading fw-bold text-uppercase fs-5 mt-4 text-danger">Repair Work</h5>
+                <p class="small text-light opacity-75 mt-3 px-1 px-lg-3 lh-lg">We will keep you informed of the progress of your repairs and let you know if any additional work is needed.</p>
+            </div>
+        </div>
+        
+        <div class="row justify-content-center mt-lg-3">
+            <div class="col-md-4 text-center position-relative mb-5 mb-lg-0">
+                <div class="process-circle">
+                    <div class="process-num">4</div>
+                    <i class="far fa-thumbs-up text-white"></i>
+                    <div class="dashed-arrow d-none d-md-block"></div>
+                </div>
+                <h5 class="font-heading fw-bold text-uppercase fs-5 mt-4 text-danger">Quality Assurance</h5>
+                <p class="small text-light opacity-75 mt-3 px-1 px-lg-3 lh-lg">We take great pride in the quality of our work and want to ensure that you are completely satisfied with the repairs we have done.</p>
+            </div>
+            
+            <div class="col-md-4 text-center position-relative">
+                <div class="process-circle">
+                    <div class="process-num">5</div>
+                    <i class="fas fa-file-invoice-dollar text-white"></i>
+                </div>
+                <h5 class="font-heading fw-bold text-uppercase fs-5 mt-4 text-danger">Payment and PickUp</h5>
+                <p class="small text-light opacity-75 mt-3 px-1 px-lg-3 lh-lg">We accept various forms of payment, including credit cards and cash, and can also work with your insurance company if your repairs are covered under your policy.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="appt-form-bg bg-overlay" id="contact">
+    <div class="container pt-3">
+        <div class="section-header">
+            <h6 class="section-sub">/// BOOK AN APPOINTMENT ///</h6>
+            <h2 class="section-title">APPOINTMENT FORM</h2>
+            <p class="text-light opacity-75 mt-3">Schedule your next appointment by using our easy-to-use online appointment form.</p>
+        </div>
+        
+        <div class="row justify-content-center mt-4">
+            <div class="col-lg-10">
+                <div class="form-container">
+                    <form>
+                        <h5 class="fw-bold mb-4 text-danger text-uppercase font-heading">Contact Info</h5>
+                        <div class="row g-3">
+                            <div class="col-md-4"><input type="text" class="custom-input" placeholder="Your name"></div>
+                            <div class="col-md-4"><input type="tel" class="custom-input" placeholder="Phone number"></div>
+                            <div class="col-md-4"><input type="email" class="custom-input" placeholder="Email Address"></div>
+                            <div class="col-md-4"><input type="date" class="custom-input" placeholder="Date"></div>
+                            <div class="col-md-4"><input type="time" class="custom-input" placeholder="Time"></div>
+                            <div class="col-md-4"><input type="text" class="custom-input" placeholder="Location"></div>
+                        </div>
+
+                        <h5 class="fw-bold mt-5 mb-4 text-danger text-uppercase font-heading">Car Details</h5>
+                        <div class="row g-3">
+                            <div class="col-md-4"><input type="text" class="custom-input" placeholder="Brand"></div>
+                            <div class="col-md-4"><input type="text" class="custom-input" placeholder="Model"></div>
+                            <div class="col-md-4"><input type="text" class="custom-input" placeholder="Year"></div>
+                        </div>
+
+                        <h5 class="fw-bold mt-5 mb-4 text-danger text-uppercase font-heading">Select The Services Needed</h5>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-4">
+                                <label class="checkbox-container"><input type="checkbox"><span class="custom-checkbox"></span><span class="small fw-bold">Air Conditioner</span></label>
+                                <label class="checkbox-container"><input type="checkbox"><span class="custom-checkbox"></span><span class="small fw-bold">Brakes Repair</span></label>
+                                <label class="checkbox-container"><input type="checkbox"><span class="custom-checkbox"></span><span class="small fw-bold">Engine Diagnostics</span></label>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="checkbox-container"><input type="checkbox"><span class="custom-checkbox"></span><span class="small fw-bold">Heating & Cooling</span></label>
+                                <label class="checkbox-container"><input type="checkbox"><span class="custom-checkbox"></span><span class="small fw-bold">Oil, Lubes & Filters</span></label>
+                                <label class="checkbox-container"><input type="checkbox"><span class="custom-checkbox"></span><span class="small fw-bold">Steering & Suspension</span></label>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="checkbox-container"><input type="checkbox"><span class="custom-checkbox"></span><span class="small fw-bold">Transmission Repair</span></label>
+                                <label class="checkbox-container"><input type="checkbox"><span class="custom-checkbox"></span><span class="small fw-bold">Denting And Painting</span></label>
+                                <label class="checkbox-container"><input type="checkbox"><span class="custom-checkbox"></span><span class="small fw-bold">Others</span></label>
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-5">
+                            <button type="button" class="btn btn-danger rounded-pill px-5 py-3 fw-bold text-uppercase w-100" style="max-width: 400px; font-size: 1.1rem;">Make An Appointment</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="client-section bg-overlay">
+    <div class="container pt-3">
+        <div class="section-header">
+            <h6 class="section-sub">/// TESTIMONIALS ///</h6>
+            <h2 class="section-title">WHAT OUR CLIENTS SAY</h2>
+        </div>
+        
+        <div class="row justify-content-center g-4 mt-2">
+            <div class="col-md-6 col-lg-6">
+                <div class="client-card shadow">
+                    <i class="fas fa-quote-left text-danger fs-1 mb-4"></i>
+                    <p class="text-light opacity-75 lh-lg mb-5" style="min-height: 80px; font-style: italic;">"Best service in Kanchipuram! They picked up my car from my home and delivered it after perfect denting work. Very transparent pricing and excellent communication."</p>
+                    <div class="d-flex align-items-center mt-auto">
+                        <img src="https://images.unsplash.com/photo-1727893200906-30281ac35405?w=600&auto=format&fit=crop&q=60" class="rounded-circle me-3 client-img" alt="Karthik M.">
+                        <div>
+                            <h6 class="font-heading text-white fw-bold mb-1 text-uppercase">KARTHIK M.</h6>
+                            <p class="small text-danger mb-0 fw-bold">Kanchipuram, Tamil Nadu</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-6">
+                <div class="client-card shadow">
+                    <i class="fas fa-quote-left text-danger fs-1 mb-4"></i>
+                    <p class="text-light opacity-75 lh-lg mb-5" style="min-height: 80px; font-style: italic;">"I broke down on the Chennai-Bangalore highway. Sri Saravanan Auto Works sent a mechanic immediately. Truly a lifesaver and very professional behavior!"</p>
+                    <div class="d-flex align-items-center mt-auto">
+                        <img src="https://images.unsplash.com/photo-1727893200906-30281ac35405?w=600&auto=format&fit=crop&q=60" class="rounded-circle me-3 client-img" alt="Priya S.">
+                        <div>
+                            <h6 class="font-heading text-white fw-bold mb-1 text-uppercase">PRIYA S.</h6>
+                            <p class="small text-danger mb-0 fw-bold">Chennai, Tamil Nadu</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-6">
+                <div class="client-card shadow">
+                    <i class="fas fa-quote-left text-danger fs-1 mb-4"></i>
+                    <p class="text-light opacity-75 lh-lg mb-5" style="min-height: 80px; font-style: italic;">"Given my Hyundai for engine overhaul. The mechanics here are very skilled and explained the technical issue in clear Tamil. Highly recommended to everyone."</p>
+                    <div class="d-flex align-items-center mt-auto">
+                        <img src="https://images.unsplash.com/photo-1727893200906-30281ac35405?w=600&auto=format&fit=crop&q=60" class="rounded-circle me-3 client-img" alt="Vignesh R.">
+                        <div>
+                            <h6 class="font-heading text-white fw-bold mb-1 text-uppercase">VIGNESH R.</h6>
+                            <p class="small text-danger mb-0 fw-bold">Thiruvallur, Tamil Nadu</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-6">
+                <div class="client-card shadow">
+                    <i class="fas fa-quote-left text-danger fs-1 mb-4"></i>
+                    <p class="text-light opacity-75 lh-lg mb-5" style="min-height: 80px; font-style: italic;">"Affordable rates compared to authorized showrooms. The quality of genuine parts used and the overall painting finish is top class. 10/10 for the service."</p>
+                    <div class="d-flex align-items-center mt-auto">
+                        <img src="https://images.unsplash.com/photo-1727893200906-30281ac35405?w=600&auto=format&fit=crop&q=60" class="rounded-circle me-3 client-img" alt="Ananya V.">
+                        <div>
+                            <h6 class="font-heading text-white fw-bold mb-1 text-uppercase">ANANYA V.</h6>
+                            <p class="small text-danger mb-0 fw-bold">Vellore, Tamil Nadu</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="map-section">
+    <div class="container-fluid px-0">
+        <div class="map-container">
+            <iframe id="footer-map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31103.58661645068!2d79.68266224168019!3d12.83401247065092!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a52c2f7e0c812c3%3A0x6a2182c5a2c2b7b5!2sKanchipuram%2C%20Tamil%20Nadu!5e0!3m2!1sen!2sin!4v1689234823488!5m2!1sen!2sin" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+    </div>
+</section>
+
+<footer class="footer-section">
+    <div class="container">
+        <div class="row g-5">
+            <div class="col-lg-4">
+                <h4 class="text-white font-heading fw-bold mb-4">SRI SARAVANAN<br><span class="text-danger">AUTO WORKS</span></h4>
+                <p class="text-light opacity-75 small lh-lg pe-lg-4">Your trusted partner for all vehicle maintenance and repair needs. Delivering quality service with certified mechanics and premium parts.</p>
+                <div class="d-flex gap-3 mt-4">
+                    <a href="#" class="text-white opacity-75 fs-4 hover-danger"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="text-white opacity-75 fs-4 hover-danger"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="text-white opacity-75 fs-4 hover-danger"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+            
+            <div class="col-lg-2 col-md-4">
+                <h5 class="text-white font-heading fw-bold mb-4 text-uppercase fs-6">Quick Links</h5>
+                <ul class="list-unstyled footer-links">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#about">About Us</a></li>
+                    <li><a href="#services">Our Services</a></li>
+                    <li><a href="#contact">Book Appointment</a></li>
+                </ul>
+            </div>
+            
+            <div class="col-lg-3 col-md-4">
+                <h5 class="text-white font-heading fw-bold mb-4 text-uppercase fs-6">Opening Hours</h5>
+                <ul class="list-unstyled text-light opacity-75 small lh-lg">
+                    <li class="d-flex justify-content-between border-bottom border-dark pb-2 mb-2"><span>Mon - Sun:</span> <span>8:00 AM - 5:30 PM</span></li>
+                    <li class="text-danger fw-bold mt-3 d-flex align-items-center"><i class="fas fa-truck-pickup me-2"></i> 24/7 Emergency Towing</li>
+                </ul>
+            </div>
+            
+            <div class="col-lg-3 col-md-4">
+                <h5 class="text-white font-heading fw-bold mb-4 text-uppercase fs-6">Contact Info</h5>
+                <ul class="list-unstyled text-light opacity-75 small lh-lg">
+                    <li class="mb-3 d-flex"><i class="fas fa-map-marker-alt text-danger me-3 mt-1"></i> <span id="footer-location">NO: 171 Auto Nagar, Kilambi, Kanchipuram, Tamil Nadu, 631-551</span></li>
+                    <li class="mb-3 d-flex"><i class="fas fa-phone-alt text-danger me-3 mt-1"></i> <span id="footer-phone">9842356799</span></li>
+                    <li class="d-flex"><i class="fas fa-envelope text-danger me-3 mt-1"></i> mechzoneautomotive.pvt.ltd@gmail.com</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer-bottom text-center">
+        <p class="small text-light opacity-50 mb-0">© 2024 Sri Saravanan Auto Works. All Rights Reserved.</p>
+    </div>
+</footer>
+
+<script>
+    // Added specific background colors (bgColor) for each district
+    const locationData = {
+        'Kanchipuram':  { phone: '9842356799', bgColor: 'rgba(211, 60, 68, 0.85)', mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31103.58661645068!2d79.68266224168019!3d12.83401247065092!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a52c2f7e0c812c3%3A0x6a2182c5a2c2b7b5!2sKanchipuram%2C%20Tamil%20Nadu!5e0!3m2!1sen!2sin!4v1689234823488!5m2!1sen!2sin' },
+        'Chennai':      { phone: '9003112233', bgColor: 'rgba(41, 128, 185, 0.85)', mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3886.58661645068!2d80.2707!3d13.0827!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a5265ea4f7d3361%3A0x6e61a70b6863d433!2sChennai%2C%20Tamil%20Nadu!5e0!3m2!1sen!2sin!4v1689234823488!5m2!1sen!2sin' },
+        'Thiruvallur':  { phone: '9443322110', bgColor: 'rgba(39, 174, 96, 0.85)', mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3886.58661645068!2d79.9120!3d13.1432!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a528e123456789%3A0x1234567890abcdef!2sThiruvallur%2C%20Tamil%20Nadu!5e0!3m2!1sen!2sin!4v1689234823488!5m2!1sen!2sin' },
+        'Vellore':      { phone: '9894455667', bgColor: 'rgba(142, 68, 173, 0.85)', mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3886.58661645068!2d79.1325!3d12.9165!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bad38e123456789%3A0x1234567890abcdef!2sVellore%2C%20Tamil%20Nadu!5e0!3m2!1sen!2sin!4v1689234823488!5m2!1sen!2sin' },
+        'Salem':        { phone: '9600112244', bgColor: 'rgba(230, 126, 34, 0.85)', mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3886.58661645068!2d78.1460!3d11.6643!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3babc8e123456789%3A0x1234567890abcdef!2sSalem%2C%20Tamil%20Nadu!5e0!3m2!1sen!2sin!4v1689234823488!5m2!1sen!2sin' },
+        'Coimbatore':   { phone: '9842211335', bgColor: 'rgba(22, 160, 133, 0.85)', mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3886.58661645068!2d76.9558!3d11.0168!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba859e123456789%3A0x1234567890abcdef!2sCoimbatore%2C%20Tamil%20Nadu!5e0!3m2!1sen!2sin!4v1689234823488!5m2!1sen!2sin' },
+        'Madhurai':     { phone: '9486677889', bgColor: 'rgba(243, 156, 18, 0.85)', mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3886.58661645068!2d78.1198!3d9.9252!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b00c8e123456789%3A0x1234567890abcdef!2sMadurai%2C%20Tamil%20Nadu!5e0!3m2!1sen!2sin!4v1689234823488!5m2!1sen!2sin' }
+    };
+
+    function updateLocationData() {
+        const selectedCity = document.getElementById('city-selector').value;
+        const data = locationData[selectedCity];
+
+        if(data) {
+            // Hero Phone Update
+            const phoneEl = document.getElementById('emergency-phone');
+            phoneEl.querySelector('span').innerText = data.phone;
+            
+            // This line correctly targets the appointment box and sets the new background color!
+            document.querySelector('.appointment-box').style.backgroundColor = data.bgColor;
+
+            // Top Bar
+            document.getElementById('top-phone').innerText = data.phone;
+            document.getElementById('top-location').innerText = selectedCity + ', Tamil Nadu';
+
+            // Footer
+            document.getElementById('footer-phone').innerText = data.phone;
+            document.getElementById('footer-location').innerText = selectedCity + ', Tamil Nadu';
+
+            // Map
+            document.getElementById('footer-map').src = data.mapUrl;
+        }
+    }
+</script>
+
+{% endblock %}

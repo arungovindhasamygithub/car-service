@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .auth-card {
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    .form-control {
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        padding: 12px 15px;
+        transition: all 0.3s ease;
+    }
+    .form-control:focus {
+        background-color: #ffffff;
+        border-color: #d32f2f;
+        box-shadow: 0 0 0 0.25rem rgba(211, 47, 47, 0.25);
+    }
+    .admin-header {
+        background: linear-gradient(135deg, #b71c1c 0%, #d32f2f 100%);
+    }
+</style>
+
+<div class="container my-5 py-5 fade-in">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-lg border-0 auth-card">
+                <div class="card-header admin-header text-white text-center py-4 border-0">
+                    <h4 class="mb-0 fw-bold tracking-wide">System Administrator</h4>
+                </div>
+                <div class="card-body p-4 p-md-5 bg-white">
+                    <p class="text-center text-muted mb-4 small fw-bold text-uppercase">Restricted Access</p>
+                    
+                    <form method="POST" action="{{ url_for('admin_login') }}">
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-muted small text-uppercase tracking-wide">Admin ID</label>
+                            <input type="text" class="form-control" name="username" placeholder="Enter administrator username" required>
+                        </div>
+                        
+                        <div class="mb-5">
+                            <label class="form-label fw-bold text-muted small text-uppercase tracking-wide">Master Password</label>
+                            <input type="password" class="form-control" name="password" placeholder="Enter master password" required>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-dark w-100 py-3 fw-bold shadow-sm">
+                            Authenticate
+                        </button>
+                    </form>
+                </div>
+                <div class="card-footer bg-light border-0 text-center py-3">
+                    <small class="text-danger fw-bold">Unauthorized access is strictly prohibited.</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

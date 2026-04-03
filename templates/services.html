@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .services-hero {
+        background: linear-gradient(135deg, #1a1a1a 0%, #2b2b2b 100%);
+        padding: 80px 0 100px;
+        position: relative;
+        overflow: hidden;
+    }
+    .services-hero::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 40px;
+        background: #f4f4f4;
+        clip-path: polygon(0 100%, 100% 100%, 100% 0);
+    }
+    .lift-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .lift-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+    }
+    .service-highlights li {
+        margin-bottom: 6px;
+    }
+    .cta-box {
+        background: linear-gradient(45deg, #d32f2f, #b71c1c);
+        border-radius: 12px;
+    }
+</style>
+
+<div class="services-hero text-center text-white">
+    <div class="container fade-in">
+        <span class="badge bg-danger px-3 py-2 mb-3 text-uppercase fw-bold">Full Catalog</span>
+        <h1 class="display-4 fw-bolder mb-3">Precision Services</h1>
+        <p class="lead text-secondary mx-auto" style="max-width: 600px;">Transparent pricing, expert mechanics, and unmatched quality. Select a service below to schedule your appointment.</p>
+    </div>
+</div>
+
+<div class="container mb-5" style="margin-top: -20px; position: relative; z-index: 10;">
+    <div class="row g-4">
+        {% if services %}
+            {% for service in services %}
+            <div class="col-md-6 col-lg-4 fade-in" style="animation-delay: {{ loop.index0 * 0.1 }}s;">
+                <div class="card h-100 border-0 shadow-sm lift-card bg-white">
+                    <div class="card-body d-flex flex-column p-4">
+                        <div class="d-flex justify-content-between align-items-start border-bottom pb-3 mb-3">
+                            <h4 class="fw-bold mb-0 text-dark pe-2">{{ service.name }}</h4>
+                            <span class="badge bg-dark text-white py-2 px-3">{{ service.duration }}</span>
+                        </div>
+                        
+                        <p class="text-muted flex-grow-1">{{ service.description }}</p>
+                        
+                        <div class="bg-light p-3 rounded mb-4 border">
+                            <h6 class="fw-bold text-dark mb-3">Service Inclusions:</h6>
+                            <ul class="text-secondary small ps-3 mb-0 service-highlights">
+                                {% if 'Oil' in service.name %}
+                                    <li>Premium engine oil replacement</li>
+                                    <li>New oil filter installation</li>
+                                    <li>Engine performance diagnostic</li>
+                                    <li>Under-hood leakage inspection</li>
+                                {% elif 'Air' in service.name %}
+                                    <li>High-flow air filter installation</li>
+                                    <li>HVAC system performance check</li>
+                                    <li>Cabin air filter inspection</li>
+                                {% elif 'Brake' in service.name %}
+                                    <li>Ceramic/Metallic pad replacement</li>
+                                    <li>Hydraulic fluid level check</li>
+                                    <li>Rotor and caliper inspection</li>
+                                {% elif 'General' in service.name %}
+                                    <li>Multi-point vehicle inspection</li>
+                                    <li>Computerized diagnostic scan</li>
+                                    <li>Comprehensive safety report</li>
+                                {% elif 'Wheel' in service.name %}
+                                    <li>Laser-guided wheel alignment</li>
+                                    <li>Dynamic wheel balancing</li>
+                                    <li>Tread and pressure analysis</li>
+                                {% elif 'AC' in service.name %}
+                                    <li>Refrigerant gas evacuation & recharge</li>
+                                    <li>Condenser and filter cleaning</li>
+                                    <li>Ventilation temperature testing</li>
+                                {% else %}
+                                    <li>Certified expert inspection</li>
+                                    <li>OEM-grade quality parts</li>
+                                    <li>Standard service warranty</li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center mt-auto border-top pt-4">
+                            <div>
+                                <span class="text-muted small d-block lh-1">Total Cost</span>
+                                <h3 class="fw-bold text-dark mb-0">₹{{ service.price }}</h3>
+                            </div>
+                            <a href="{{ url_for('customer_login') }}" class="btn btn-danger fw-bold px-4 py-2">Book Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12 py-5 text-center">
+                <div class="card border-0 shadow-sm p-5 bg-white">
+                    <h4 class="text-muted fw-bold mb-3">Service Catalog Updating</h4>
+                    <p class="text-secondary mb-0">Our administrators are currently provisioning the latest service offerings and pricing. Please check back shortly.</p>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    
+    <div class="row mt-5 pt-3">
+        <div class="col-12">
+            <div class="cta-box text-white p-5 text-center shadow-lg">
+                <h3 class="fw-bold mb-3">Require a Custom Modification or Repair?</h3>
+                <p class="mb-4 fs-5 text-light opacity-75 mx-auto" style="max-width: 700px;">We engineer custom service packages tailored specifically to your vehicle's unique demands and performance goals.</p>
+                <a href="{{ url_for('index') }}" class="btn btn-light btn-lg fw-bold text-danger px-5">Contact Our Engineers</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

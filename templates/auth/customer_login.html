@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .auth-card {
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    .form-control {
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        padding: 12px 15px;
+        transition: all 0.3s ease;
+    }
+    .form-control:focus {
+        background-color: #ffffff;
+        border-color: #d32f2f;
+        box-shadow: 0 0 0 0.25rem rgba(211, 47, 47, 0.25);
+    }
+    .google-btn {
+        background-color: #fff;
+        border: 1px solid #dadce0;
+        color: #3c4043;
+        transition: background-color 0.3s, box-shadow 0.3s;
+    }
+    .google-btn:hover {
+        background-color: #f8f9fa;
+        box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+    }
+</style>
+
+<div class="container my-5 py-5 fade-in">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-lg border-0 auth-card">
+                <div class="card-header bg-dark text-white text-center py-4 border-0">
+                    <h4 class="mb-0 fw-bold">Customer Portal</h4>
+                </div>
+                <div class="card-body p-4 p-md-5 bg-white">
+                    <p class="text-center text-muted mb-4 small fw-bold">
+                        Access is restricted to registered customers. Enter your registered mobile number to view your dashboard.
+                    </p>
+                    
+                    <form method="POST" action="{{ url_for('customer_login') }}">
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-muted small text-uppercase tracking-wide">Registered Mobile</label>
+                            <input type="tel" class="form-control" name="mobile" placeholder="10-digit mobile number" required pattern="[0-9]{10}">
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-muted small text-uppercase tracking-wide">Current City / Location</label>
+                            <input type="text" class="form-control" name="location" id="location" placeholder="e.g., Chennai" required>
+                            <div class="form-text small mt-2"><i class="fas fa-info-circle me-1"></i> Used to display your nearest authorized service centers.</div>
+                        </div>
+                        
+                        <input type="hidden" name="lat" id="lat">
+                        <input type="hidden" name="lng" id="lng">
+                        
+                        <button type="submit" class="btn btn-danger w-100 py-3 fw-bold shadow-sm">
+                            Verify & Access Dashboard
+                        </button>
+                    </form>
+
+                    <div class="d-flex align-items-center my-4">
+                        <hr class="flex-grow-1 text-muted">
+                        <span class="px-3 text-muted small fw-bold">OR</span>
+                        <hr class="flex-grow-1 text-muted">
+                    </div>
+
+                    <button type="button" class="btn google-btn w-100 py-3 fw-bold d-flex align-items-center justify-content-center" onclick="alert('Google login is a mockup feature for now.')">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google Logo" width="20" class="me-2">
+                        Continue with Google
+                    </button>
+
+                </div>
+                <div class="card-footer bg-light border-0 text-center py-3">
+                    <small class="text-muted fw-bold">Not registered? Contact an authorized garage to set up an account.</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            function(position) {
+                document.getElementById('lat').value = position.coords.latitude;
+                document.getElementById('lng').value = position.coords.longitude;
+            },
+            function(error) {
+                console.log("Location access denied or unavailable.");
+            }
+        );
+    }
+});
+</script>
+{% endblock %}

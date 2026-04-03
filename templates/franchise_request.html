@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    /* Dark Theme Form Inputs */
+    .dark-form-input {
+        background-color: #111 !important;
+        border: 1px solid #333 !important;
+        color: #fff !important;
+        padding: 12px 15px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    .dark-form-input:focus {
+        background-color: #1a1a1a !important;
+        border-color: var(--accent-red, #d33c44) !important;
+        box-shadow: 0 0 0 0.25rem rgba(211, 60, 68, 0.25) !important;
+        color: #fff !important;
+    }
+    .dark-form-input::placeholder {
+        color: #666 !important;
+    }
+    
+    /* Dropdown options need dark background */
+    select.dark-form-input option {
+        background-color: #222;
+        color: #fff;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #ddd;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 8px;
+    }
+    
+    /* Franchise Advantage List */
+    .benefit-item {
+        padding: 20px;
+        background: #151515;
+        border-radius: 8px;
+        border-left: 4px solid var(--accent-red, #d33c44);
+        margin-bottom: 15px;
+        transition: 0.3s ease;
+        border-top: 1px solid #222;
+        border-right: 1px solid #222;
+        border-bottom: 1px solid #222;
+    }
+    .benefit-item:hover {
+        background: #1a1a1a;
+        transform: translateX(5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    
+    /* Submit Button */
+    .btn-submit-franchise {
+        background-color: var(--accent-red, #d33c44);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        transition: 0.3s;
+    }
+    .btn-submit-franchise:hover {
+        background-color: #b02a31;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(211, 60, 68, 0.3);
+    }
+</style>
+
+<div class="container my-5 py-4 fade-in">
+    <div class="row justify-content-center">
+        <div class="col-lg-11">
+            
+            <div class="text-center mb-5">
+                <span class="section-tag mb-2 mx-auto d-table">Partnership Program</span>
+                <h1 class="display-5 fw-bolder text-white mb-3">Join the AutoWorks Network</h1>
+                <p class="lead text-light opacity-75 mx-auto" style="max-width: 700px; font-size: 1.1rem; line-height: 1.6;">
+                    Operate a verified franchise location and leverage our established brand, cutting-edge technology, and proven business model.
+                </p>
+            </div>
+
+            <div class="row g-5">
+                <div class="col-md-7">
+                    <div class="card shadow-lg border-0" style="background-color: #222; border-radius: 16px;">
+                        <div class="card-header p-4 border-0" style="background-color: #111; border-radius: 16px 16px 0 0; border-bottom: 1px solid #333 !important;">
+                            <h4 class="mb-0 fw-bold text-white"><i class="fas fa-file-signature me-2" style="color: var(--accent-red, #d33c44);"></i> Application Form</h4>
+                        </div>
+                        <div class="card-body p-4 p-md-5">
+                            <form method="POST">
+                                <div class="row g-3 mb-4">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Full Name <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control dark-form-input" name="name" placeholder="John Doe" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Email Address <span class="text-danger">*</span></label>
+                                        <input type="email" class="form-control dark-form-input" name="email" placeholder="john@example.com" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="row g-3 mb-4">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Mobile Number <span class="text-danger">*</span></label>
+                                        <input type="tel" class="form-control dark-form-input" name="mobile" pattern="[0-9]{10}" placeholder="10-digit number" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Target City <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control dark-form-input" name="location" placeholder="e.g., Chennai" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label class="form-label">Proposed Location Address <span class="text-danger">*</span></label>
+                                    <textarea class="form-control dark-form-input" name="address" rows="2" placeholder="Street address of proposed garage" required></textarea>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label class="form-label">Investment Capacity <span class="text-danger">*</span></label>
+                                    <select class="form-select dark-form-input" name="investment" required>
+                                        <option value="" disabled selected>Select available capital</option>
+                                        <option value="5-10L">₹5 Lakhs - ₹10 Lakhs</option>
+                                        <option value="10-20L">₹10 Lakhs - ₹20 Lakhs</option>
+                                        <option value="20-50L">₹20 Lakhs - ₹50 Lakhs</option>
+                                        <option value="50L+">Above ₹50 Lakhs</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label class="form-label">Automotive Experience</label>
+                                    <textarea class="form-control dark-form-input" name="experience" rows="2" placeholder="Detail any prior experience in auto repair or management"></textarea>
+                                </div>
+                                
+                                <div class="mb-5">
+                                    <label class="form-label">Statement of Interest <span class="text-danger">*</span></label>
+                                    <textarea class="form-control dark-form-input" name="reason" rows="3" placeholder="Why do you want to partner with AutoWorks?" required></textarea>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-submit-franchise w-100 py-3 fw-bold fs-5 text-uppercase tracking-wide">
+                                    Submit Application <i class="fas fa-paper-plane ms-2"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-5">
+                    <div class="sticky-top" style="top: 100px;">
+                        <h4 class="fw-bold mb-4 pb-2 d-inline-block text-white" style="border-bottom: 2px solid var(--accent-red, #d33c44);">The Franchise Advantage</h4>
+                        
+                        <div class="benefit-item mt-2">
+                            <h6 class="fw-bold mb-2 text-white"><i class="fas fa-shield-alt me-2" style="color: var(--accent-red, #d33c44);"></i> Established Brand Authority</h6>
+                            <p class="text-muted small mb-0" style="line-height: 1.6;">Leverage instant trust and recognition in the premium automotive repair market.</p>
+                        </div>
+                        
+                        <div class="benefit-item">
+                            <h6 class="fw-bold mb-2 text-white"><i class="fas fa-laptop-code me-2" style="color: var(--accent-red, #d33c44);"></i> Proprietary Technology</h6>
+                            <p class="text-muted small mb-0" style="line-height: 1.6;">Full access to our centralized dashboard for tracking, booking, and inventory management.</p>
+                        </div>
+                        
+                        <div class="benefit-item">
+                            <h6 class="fw-bold mb-2 text-white"><i class="fas fa-chalkboard-teacher me-2" style="color: var(--accent-red, #d33c44);"></i> Comprehensive Training</h6>
+                            <p class="text-muted small mb-0" style="line-height: 1.6;">Intensive onboarding and continuous education for both technical staff and management.</p>
+                        </div>
+                        
+                        <div class="benefit-item">
+                            <h6 class="fw-bold mb-2 text-white"><i class="fas fa-link me-2" style="color: var(--accent-red, #d33c44);"></i> Supply Chain Integration</h6>
+                            <p class="text-muted small mb-0" style="line-height: 1.6;">Direct access to OEM-grade parts at heavily discounted corporate rates.</p>
+                        </div>
+                        
+                        <div class="benefit-item">
+                            <h6 class="fw-bold mb-2 text-white"><i class="fas fa-bullhorn me-2" style="color: var(--accent-red, #d33c44);"></i> Marketing Support</h6>
+                            <p class="text-muted small mb-0" style="line-height: 1.6;">Benefit from our national digital marketing campaigns driving local footfall.</p>
+                        </div>
+                        
+                        <div class="mt-4 p-4 text-center rounded-3 shadow" style="background: linear-gradient(135deg, #d33c44 0%, #b02a31 100%); border: 1px solid #ff4d55;">
+                            <h5 class="fw-bold mb-2 text-white">High ROI Potential</h5>
+                            <p class="small text-white opacity-75 mb-0" style="line-height: 1.6;">Our structured model is designed for rapid break-even and sustainable long-term profitability.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+{% endblock %}

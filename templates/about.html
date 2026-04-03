@@ -1,0 +1,276 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    /* --- ABOUT PAGE SPECIFIC STYLES --- */
+    .about-hero {
+        position: relative;
+        background-color: #050505;
+        padding: 120px 0;
+        border-bottom: 2px solid var(--accent-red, #d33c44);
+        overflow: hidden;
+    }
+    
+    .about-hero-bg {
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background-image: url('https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=1920&q=80');
+        background-size: cover;
+        background-position: center;
+        opacity: 0.15;
+        z-index: 1;
+        filter: grayscale(100%);
+    }
+
+    .about-hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .story-image-wrapper {
+        position: relative;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    
+    .story-image-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        min-height: 400px;
+        filter: grayscale(80%) brightness(0.8);
+        transition: 0.5s ease;
+    }
+    
+    .story-image-wrapper:hover img {
+        filter: grayscale(0%) brightness(1);
+        transform: scale(1.05);
+    }
+
+    .story-image-wrapper::after {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        box-shadow: inset 0 0 50px rgba(0,0,0,0.8);
+        pointer-events: none;
+    }
+
+    /* Stats Section */
+    .stats-section {
+        background-color: #111;
+        border-top: 1px solid #222;
+        border-bottom: 1px solid #222;
+    }
+    
+    .stat-box {
+        text-align: center;
+        padding: 30px 15px;
+    }
+    
+    .stat-number {
+        font-size: 3.5rem;
+        font-weight: 800;
+        color: var(--accent-red, #d33c44);
+        line-height: 1;
+        margin-bottom: 10px;
+    }
+    
+    .stat-label {
+        color: #fff;
+        font-size: 1rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        opacity: 0.8;
+    }
+
+    /* Core Values Cards */
+    .value-card {
+        background-color: #151515;
+        border: 1px solid #2a2a2a;
+        border-radius: 12px;
+        padding: 40px 30px;
+        height: 100%;
+        transition: all 0.3s ease;
+    }
+    
+    .value-card:hover {
+        transform: translateY(-10px);
+        border-color: var(--accent-red, #d33c44);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+        background-color: #1a1a1a;
+    }
+    
+    .value-icon {
+        width: 70px;
+        height: 70px;
+        background-color: rgba(211, 60, 68, 0.1);
+        color: var(--accent-red, #d33c44);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        margin-bottom: 25px;
+        transition: 0.3s ease;
+    }
+    
+    .value-card:hover .value-icon {
+        background-color: var(--accent-red, #d33c44);
+        color: #fff;
+    }
+
+    /* CTA Banner */
+    .cta-banner {
+        background: linear-gradient(135deg, #151515 0%, #0a0a0a 100%);
+        border: 1px solid rgba(211, 60, 68, 0.2);
+        border-radius: 16px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .cta-banner::before {
+        content: '';
+        position: absolute;
+        top: 0; right: 0;
+        width: 50%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(211, 60, 68, 0.1));
+        transform: skewX(-20deg);
+    }
+</style>
+
+<div class="about-hero text-center text-white">
+    <div class="about-hero-bg"></div>
+    <div class="container about-hero-content fade-in">
+        <span class="section-tag mx-auto d-table mb-3" style="letter-spacing: 3px;">Get To Know Us</span>
+        <h1 class="fw-bolder mb-4" style="font-size: 4rem; letter-spacing: -1px;">Driving Excellence in<br>Every Repair.</h1>
+        <p class="text-light opacity-75 mx-auto" style="max-width: 650px; font-size: 1.15rem; line-height: 1.8;">
+            We are more than just a repair shop. We are a team of passionate automotive experts dedicated to keeping you safe on the road with transparent, high-end service.
+        </p>
+    </div>
+</div>
+
+<div class="container py-5 my-5">
+    <div class="row align-items-center g-5">
+        <div class="col-lg-6 fade-in">
+            <div class="story-image-wrapper shadow-lg">
+                <img src="https://images.unsplash.com/photo-1530046339160-ce3e530c7d2f?auto=format&fit=crop&w=1000&q=80" alt="AutoWorks Garage">
+            </div>
+        </div>
+        <div class="col-lg-6 fade-in" style="animation-delay: 0.2s;">
+            <span class="section-tag mb-2">Our Story</span>
+            <h2 class="section-title mb-4">Built on Trust, Fueled by Expertise</h2>
+            
+            <p class="text-light opacity-75 mb-4" style="line-height: 1.8; font-size: 1.05rem;">
+                Founded with a vision to revolutionize the auto repair industry, <strong>AutoWorks</strong> started as a single garage and has grown into a premier network of certified service centers. 
+            </p>
+            <p class="text-light opacity-75 mb-4" style="line-height: 1.8; font-size: 1.05rem;">
+                We noticed a massive gap in the market: drivers were tired of hidden fees, slow turnaround times, and lack of transparency. We built our business model to solve exactly that. Today, our proprietary digital workflow allows customers to approve quotes instantly and track their vehicles live in our bays.
+            </p>
+            
+            <div class="d-flex align-items-center mt-5 p-4 rounded" style="background-color: #151515; border-left: 4px solid var(--accent-red, #d33c44);">
+                <div class="me-4">
+                    <i class="fas fa-quote-left fa-3x" style="color: rgba(211, 60, 68, 0.3);"></i>
+                </div>
+                <div>
+                    <h5 class="text-white fw-bold mb-1">Our Mission</h5>
+                    <p class="text-muted small mb-0 lh-base">To provide absolute transparency, utilize elite-level diagnostics, and ensure zero compromises on the safety and performance of every vehicle we touch.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="stats-section py-5 my-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="stat-box">
+                    <div class="stat-number">15+</div>
+                    <div class="stat-label">Years of Experience</div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="stat-box border-start border-dark">
+                    <div class="stat-number">25k</div>
+                    <div class="stat-label">Vehicles Repaired</div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="stat-box border-start border-dark">
+                    <div class="stat-number">40+</div>
+                    <div class="stat-label">Certified Experts</div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="stat-box border-start border-dark">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Transparency</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container py-5 my-5">
+    <div class="text-center mb-5 pb-3">
+        <span class="section-tag mx-auto d-table mb-2">Why Choose Us</span>
+        <h2 class="section-title">Our Core Values</h2>
+    </div>
+    
+    <div class="row g-4">
+        <div class="col-md-6 col-lg-4 fade-in">
+            <div class="value-card">
+                <div class="value-icon">
+                    <i class="fas fa-search-dollar"></i>
+                </div>
+                <h4 class="text-white fw-bold mb-3">Absolute Transparency</h4>
+                <p class="text-light opacity-50 small lh-lg mb-0">
+                    No hidden fees. No surprise charges. You receive a detailed digital quote to approve before we ever turn a wrench.
+                </p>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 fade-in" style="animation-delay: 0.1s;">
+            <div class="value-card">
+                <div class="value-icon">
+                    <i class="fas fa-microchip"></i>
+                </div>
+                <h4 class="text-white fw-bold mb-3">Advanced Diagnostics</h4>
+                <p class="text-light opacity-50 small lh-lg mb-0">
+                    We use elite, OEM-level diagnostic computers to pinpoint exactly what your vehicle needs, eliminating guesswork.
+                </p>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 fade-in" style="animation-delay: 0.2s;">
+            <div class="value-card">
+                <div class="value-icon">
+                    <i class="fas fa-gem"></i>
+                </div>
+                <h4 class="text-white fw-bold mb-3">Genuine Quality</h4>
+                <p class="text-light opacity-50 small lh-lg mb-0">
+                    We exclusively source high-quality, authentic parts designed specifically for your vehicle's make and model.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container pb-5 mb-5 fade-in">
+    <div class="cta-banner p-4 p-md-5 d-flex flex-column flex-lg-row align-items-center justify-content-between shadow-lg">
+        <div class="mb-4 mb-lg-0 text-center text-lg-start position-relative z-index-2">
+            <h3 class="fw-bolder text-white mb-2 text-uppercase">Ready to experience the difference?</h3>
+            <p class="text-light opacity-75 mb-0 fs-6" style="max-width: 600px; line-height: 1.6;">
+                Book your appointment today and let our certified experts take care of the rest.
+            </p>
+        </div>
+        <div class="position-relative z-index-2 d-flex gap-3">
+            <a href="{{ url_for('index') }}#appointment" class="btn btn-danger btn-lg fw-bold px-4 py-3 text-nowrap text-uppercase" style="border-radius: 8px; background-color: var(--accent-red, #d33c44); border: none;">
+                Book Appointment <i class="fas fa-arrow-right ms-2"></i>
+            </a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

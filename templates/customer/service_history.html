@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .history-card {
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        border: none;
+        overflow: hidden;
+    }
+    .table-dark-header {
+        background-color: #1a1a1a;
+        color: #ffffff;
+        border-bottom: 3px solid #d32f2f;
+    }
+    .table-dark-header th {
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+        padding: 15px;
+        border: none;
+        white-space: nowrap;
+    }
+    .table tbody td {
+        padding: 15px;
+        vertical-align: middle;
+        color: #4a4a4a;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    .issue-tag {
+        display: inline-block;
+        background-color: #f1f3f5;
+        color: #333;
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 4px 8px;
+        border-radius: 4px;
+        margin-bottom: 4px;
+        border: 1px solid #e9ecef;
+    }
+    .status-indicator {
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        padding: 5px 10px;
+        border-radius: 6px;
+    }
+</style>
+
+<div class="container my-5 fade-in">
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-danger pb-3">
+        <h2 class="fw-bold text-white mb-0">Service History</h2>
+        <a href="{{ url_for('customer_dashboard') }}" class="btn btn-outline-dark fw-bold px-3">Back to Dashboard</a>
+    </div>
+    
+    <div class="history-card">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-dark-header">
+                        <tr>
+                            <th class="ps-4">Job ID</th>
+                            <th>Vehicle Info</th>
+                            <th>Diagnosed Issues</th>
+                            <th>Service Center</th>
+                            <th>Job Status</th>
+                            <th>Invoice Date</th>
+                            <th>Total Amount</th>
+                            <th>Payment</th>
+                            <th class="text-end pe-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for service in services %}
+                        <tr>
+                            <td class="fw-bold text-dark ps-4">#{{ service.id }}</td>
+                            <td>
+                                <span class="fw-bold text-dark d-block">{{ service.vehicle_number }}</span>
+                                <span class="small text-muted">{{ service.vehicle_model or 'Unspecified Model' }}</span>
+                            </td>
+                            <td>
+                                <div class="d-flex flex-wrap gap-1">
+                                    {% for item in service.service_items %}
+                                        <span class="issue-tag">{{ item.issue_type }}</span>
+                                    {% endfor %}
+                                    {% if not service.service_items %}
+                                        <span class="text-muted small">Pending Inspection</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td class="fw-bold">{{ service.franchise.franchise_name }}</td>
+                            <td>
+                                <span class="badge bg-{{ 'warning' if service.overall_status == 'Pending' else 'info' if service.overall_status == 'In Progress' else 'success' }} text-dark px-3 py-2 fw-bold">
+                                    {{ service.overall_status }}
+                                </span>
+                            </td>
+                            <td class="text-muted fw-bold">{{ service.created_at.strftime('%d %b %Y') }}</td>
+                            <td class="fw-bold text-danger fs-6">₹{{ "%.2f"|format(service.total_amount) }}</td>
+                            <td>
+                                {% set payment = service.payments|first %}
+                                {% if payment and payment.status == 'Completed' %}
+                                    <span class="status-indicator bg-success bg-opacity-10 text-success border border-success">Settled</span>
+                                {% else %}
+                                    <span class="status-indicator bg-warning bg-opacity-10 text-warning border border-warning">Pending</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-end pe-4 text-nowrap">
+                                <a href="{{ url_for('track_service', service_id=service.id) }}" class="btn btn-sm btn-dark fw-bold px-3 me-1">
+                                    Details
+                                </a>
+                                {% if service.overall_status == 'Completed' and (not payment or payment.status != 'Completed') %}
+                                <a href="{{ url_for('payment', service_id=service.id) }}" class="btn btn-sm btn-danger fw-bold px-3 shadow-sm">
+                                    Pay Now
+                                </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="9" class="text-center py-5">
+                                <i class="fas fa-clipboard-list fa-3x text-muted mb-3 opacity-50"></i>
+                                <h5 class="text-muted fw-normal mb-3">Your service history is currently empty.</h5>
+                                <a href="{{ url_for('services') }}" class="btn btn-danger fw-bold px-4 py-2 shadow-sm">Book Your First Service</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

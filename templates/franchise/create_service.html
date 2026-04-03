@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .service-intake-card {
+        background: #ffffff;
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    .intake-header {
+        background: #1a1a1a;
+        color: #ffffff;
+        border-bottom: 4px solid #d32f2f;
+        border-radius: 15px 15px 0 0 !important;
+        padding: 25px;
+    }
+    .form-label {
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 0.5px;
+        color: #444;
+    }
+    .custom-input-group .input-group-text {
+        background: #f8f9fa;
+        border-right: none;
+        color: #d32f2f;
+    }
+    .custom-input-group .form-control {
+        border-left: none;
+        padding: 12px;
+        font-weight: 500;
+    }
+    .custom-input-group .form-control:focus {
+        box-shadow: none;
+        border-color: #ced4da;
+    }
+    .intake-help-text {
+        font-size: 0.75rem;
+        color: #888;
+        display: block;
+        margin-top: 5px;
+    }
+</style>
+
+<div class="container my-5 fade-in">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="service-intake-card">
+                <div class="intake-header text-center">
+                    <i class="fas fa-file-invoice fa-2x mb-2 text-danger"></i>
+                    <h4 class="fw-bold mb-0">Service Intake Form</h4>
+                    <p class="small opacity-75 mb-0">Register vehicle entry into the service bay</p>
+                </div>
+                
+                <div class="card-body p-4 p-md-5">
+                    <form method="POST">
+                        <div class="mb-4">
+                            <label class="form-label">Customer Mobile Connection</label>
+                            <div class="input-group custom-input-group">
+                                <span class="input-group-text"><i class="fas fa-phone-alt"></i></span>
+                                <input type="tel" class="form-control" name="mobile" 
+                                       placeholder="10-digit mobile number" 
+                                       pattern="[0-9]{10}" required>
+                            </div>
+                            <span class="intake-help-text">
+                                <i class="fas fa-info-circle me-1"></i> 
+                                New numbers will trigger a guest profile creation.
+                            </span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Customer Location / City</label>
+                            <div class="input-group custom-input-group">
+                                <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                                <input type="text" class="form-control" name="location" 
+                                       placeholder="e.g. Chennai" required>
+                            </div>
+                            <span class="intake-help-text">
+                                <i class="fas fa-info-circle me-1"></i> 
+                                Required to match customer with nearby service centers.
+                            </span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Vehicle Registration Number</label>
+                            <div class="input-group custom-input-group">
+                                <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                                <input type="text" class="form-control" name="vehicle_number" 
+                                       placeholder="e.g. TN 01 AB 1234" 
+                                       style="text-transform: uppercase;" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-5">
+                            <label class="form-label">Vehicle Make & Model</label>
+                            <div class="input-group custom-input-group">
+                                <span class="input-group-text"><i class="fas fa-car-side"></i></span>
+                                <input type="text" class="form-control" name="vehicle_model" 
+                                       placeholder="e.g. Toyota Fortuner / Honda City">
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-3">
+                            <button type="submit" class="btn btn-danger btn-lg fw-bold py-3 shadow-sm">
+                                Create Job Card <i class="fas fa-arrow-right ms-2 small"></i>
+                            </button>
+                            <a href="{{ url_for('franchise_dashboard') }}" class="btn btn-link text-muted text-decoration-none fw-bold">
+                                Return to Dashboard
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="text-center mt-4">
+                <p class="text-muted small">
+                    <i class="fas fa-shield-alt me-1"></i> 
+                    Standard service terms and conditions apply to all new job cards.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
