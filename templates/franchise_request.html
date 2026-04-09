@@ -68,77 +68,218 @@
         transform: translateY(-2px);
         box-shadow: 0 10px 20px rgba(211, 60, 68, 0.3);
     }
+
+    /* Custom Checkbox/Radio */
+    .custom-check-label {
+        color: #ccc;
+        font-size: 0.9rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .custom-check-input {
+        background-color: #111;
+        border: 1px solid #555;
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+    }
+    .custom-check-input:checked {
+        background-color: var(--accent-red, #d33c44);
+        border-color: var(--accent-red, #d33c44);
+    }
 </style>
 
 <div class="container my-5 py-4 fade-in">
     <div class="row justify-content-center">
-        <div class="col-lg-11">
+        <div class="col-lg-12">
             
             <div class="text-center mb-5">
-                <span class="section-tag mb-2 mx-auto d-table">Partnership Program</span>
-                <h1 class="display-5 fw-bolder text-white mb-3">Join the AutoWorks Network</h1>
+                <span class="section-tag mb-2 mx-auto d-table px-3 py-1 bg-dark rounded border border-secondary text-danger fw-bold text-uppercase" style="letter-spacing: 2px; font-size: 0.85rem;">Partnership Program</span>
+                <h1 class="display-5 fw-bolder text-white mb-3 text-uppercase">Join the Mech Zone Network</h1>
                 <p class="lead text-light opacity-75 mx-auto" style="max-width: 700px; font-size: 1.1rem; line-height: 1.6;">
                     Operate a verified franchise location and leverage our established brand, cutting-edge technology, and proven business model.
                 </p>
             </div>
 
             <div class="row g-5">
-                <div class="col-md-7">
+                <div class="col-lg-7">
                     <div class="card shadow-lg border-0" style="background-color: #222; border-radius: 16px;">
                         <div class="card-header p-4 border-0" style="background-color: #111; border-radius: 16px 16px 0 0; border-bottom: 1px solid #333 !important;">
-                            <h4 class="mb-0 fw-bold text-white"><i class="fas fa-file-signature me-2" style="color: var(--accent-red, #d33c44);"></i> Application Form</h4>
+                            <h4 class="mb-1 fw-bold text-white text-uppercase">FRANCHISE REQUEST FORM</h4>
+                            <p class="small m-0 fw-bold" style="color: var(--accent-red, #d33c44); letter-spacing: 1px;">JOIN MECH ZONE AUTOMOTIVE — DRIVE GROWTH WITH US.</p>
                         </div>
+                        
                         <div class="card-body p-4 p-md-5">
                             <form method="POST">
-                                <div class="row g-3 mb-4">
+                                
+                                <h5 class="fw-bold mb-4 text-white text-uppercase border-bottom border-secondary pb-2" style="font-size: 1.1rem;"><span style="color: var(--accent-red, #d33c44);">Section 1:</span> Applicant Details</h5>
+                                <div class="row g-3 mb-5">
                                     <div class="col-md-6">
                                         <label class="form-label">Full Name <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control dark-form-input" name="name" placeholder="John Doe" required>
                                     </div>
                                     <div class="col-md-6">
+                                        <label class="form-label">Date of Birth <span class="text-danger">*</span></label>
+                                        <input type="date" class="form-control dark-form-input" name="dob" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Gender <span class="text-danger">*</span></label>
+                                        <select class="form-select dark-form-input" name="gender" required>
+                                            <option value="" disabled selected>Select Gender</option>
+                                            <option value="Male">Male</option>
+                                            <option value="Female">Female</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Nationality <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control dark-form-input" name="nationality" placeholder="e.g., Indian" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Contact Number <span class="text-danger">*</span></label>
+                                        <input type="tel" class="form-control dark-form-input" name="phone" placeholder="Mobile Number" required>
+                                    </div>
+                                    <div class="col-md-6">
                                         <label class="form-label">Email Address <span class="text-danger">*</span></label>
                                         <input type="email" class="form-control dark-form-input" name="email" placeholder="john@example.com" required>
                                     </div>
-                                </div>
-                                
-                                <div class="row g-3 mb-4">
-                                    <div class="col-md-6">
-                                        <label class="form-label">Mobile Number <span class="text-danger">*</span></label>
-                                        <input type="tel" class="form-control dark-form-input" name="mobile" pattern="[0-9]{10}" placeholder="10-digit number" required>
+                                    <div class="col-12">
+                                        <label class="form-label">Residential Address <span class="text-danger">*</span></label>
+                                        <textarea class="form-control dark-form-input" name="residential_address" rows="2" placeholder="Full Home Address" required></textarea>
                                     </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label">Target City <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control dark-form-input" name="location" placeholder="e.g., Chennai" required>
+                                    <div class="col-12">
+                                        <label class="form-label">ID Proof (Aadhar / Passport / Driving License) <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control dark-form-input" name="id_proof" placeholder="Enter ID Document Number" required>
                                     </div>
                                 </div>
-                                
-                                <div class="mb-4">
-                                    <label class="form-label">Proposed Location Address <span class="text-danger">*</span></label>
-                                    <textarea class="form-control dark-form-input" name="address" rows="2" placeholder="Street address of proposed garage" required></textarea>
+
+                                <h5 class="fw-bold mb-4 text-white text-uppercase border-bottom border-secondary pb-2" style="font-size: 1.1rem;"><span style="color: var(--accent-red, #d33c44);">Section 2:</span> Business Information</h5>
+                                <div class="row g-3 mb-5">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Proposed Location (City/Area) <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control dark-form-input" name="proposed_location" placeholder="e.g., Chennai" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Current Business/Occupation <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control dark-form-input" name="current_occupation" placeholder="Current Profession" required>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Experience in Auto Industry?</label>
+                                        <input type="text" class="form-control dark-form-input" name="auto_experience" placeholder="Yes/No, specify years if applicable">
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Previous Franchise Experience?</label>
+                                        <input type="text" class="form-control dark-form-input" name="franchise_experience" placeholder="Yes/No, provide details if applicable">
+                                    </div>
                                 </div>
-                                
-                                <div class="mb-4">
-                                    <label class="form-label">Investment Capacity <span class="text-danger">*</span></label>
-                                    <select class="form-select dark-form-input" name="investment" required>
-                                        <option value="" disabled selected>Select available capital</option>
-                                        <option value="5-10L">₹5 Lakhs - ₹10 Lakhs</option>
-                                        <option value="10-20L">₹10 Lakhs - ₹20 Lakhs</option>
-                                        <option value="20-50L">₹20 Lakhs - ₹50 Lakhs</option>
-                                        <option value="50L+">Above ₹50 Lakhs</option>
-                                    </select>
+
+                                <h5 class="fw-bold mb-4 text-white text-uppercase border-bottom border-secondary pb-2" style="font-size: 1.1rem;"><span style="color: var(--accent-red, #d33c44);">Section 3:</span> Investment & Financials</h5>
+                                <div class="row g-3 mb-5">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Available Capital (₹) <span class="text-danger">*</span></label>
+                                        <input type="number" class="form-control dark-form-input" name="capital" placeholder="e.g., 2000000" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Source of Funds <span class="text-danger">*</span></label>
+                                        <select class="form-select dark-form-input" name="funds_source" required>
+                                            <option value="" disabled selected>Select Source</option>
+                                            <option value="Self">Self</option>
+                                            <option value="Loan">Loan</option>
+                                            <option value="Partnership">Partnership</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label mb-3">Preferred Franchise Model <span class="text-danger">*</span></label>
+                                        <div class="d-flex flex-wrap gap-4">
+                                            <label class="custom-check-label"><input type="radio" name="franchise_model" value="Single Unit" class="form-check-input custom-check-input" required> Single Unit</label>
+                                            <label class="custom-check-label"><input type="radio" name="franchise_model" value="Multi-Unit" class="form-check-input custom-check-input"> Multi‑Unit</label>
+                                            <label class="custom-check-label"><input type="radio" name="franchise_model" value="Area Development" class="form-check-input custom-check-input"> Area Development</label>
+                                        </div>
+                                    </div>
                                 </div>
-                                
-                                <div class="mb-4">
-                                    <label class="form-label">Automotive Experience</label>
-                                    <textarea class="form-control dark-form-input" name="experience" rows="2" placeholder="Detail any prior experience in auto repair or management"></textarea>
+
+                                <h5 class="fw-bold mb-4 text-white text-uppercase border-bottom border-secondary pb-2" style="font-size: 1.1rem;"><span style="color: var(--accent-red, #d33c44);">Section 4:</span> Operational Readiness</h5>
+                                <div class="row g-3 mb-5">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Have a suitable property? <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control dark-form-input" name="has_property" placeholder="Yes/No, details" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Expected Timeline to Start</label>
+                                        <input type="text" class="form-control dark-form-input" name="timeline" placeholder="e.g., 3 Months">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Property Ownership</label>
+                                        <select class="form-select dark-form-input" name="ownership">
+                                            <option value="" disabled selected>Select Ownership</option>
+                                            <option value="Owned">Owned</option>
+                                            <option value="Leased">Leased</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Property Size (sq. ft.)</label>
+                                        <input type="number" class="form-control dark-form-input" name="property_size" placeholder="e.g., 1500">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Parking Availability</label>
+                                        <select class="form-select dark-form-input" name="parking">
+                                            <option value="" disabled selected>Select</option>
+                                            <option value="Yes">Yes</option>
+                                            <option value="No">No</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Accessibility</label>
+                                        <select class="form-select dark-form-input" name="accessibility">
+                                            <option value="" disabled selected>Select Type</option>
+                                            <option value="Main Road">Main Road</option>
+                                            <option value="Residential Area">Residential Area</option>
+                                            <option value="Commercial Zone">Commercial Zone</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Availability of Skilled Workforce</label>
+                                        <input type="text" class="form-control dark-form-input" name="workforce" placeholder="Yes/No, details">
+                                    </div>
                                 </div>
-                                
-                                <div class="mb-5">
-                                    <label class="form-label">Statement of Interest <span class="text-danger">*</span></label>
-                                    <textarea class="form-control dark-form-input" name="reason" rows="3" placeholder="Why do you want to partner with AutoWorks?" required></textarea>
+
+                                <h5 class="fw-bold mb-4 text-white text-uppercase border-bottom border-secondary pb-2" style="font-size: 1.1rem;"><span style="color: var(--accent-red, #d33c44);">Section 5:</span> Legal & Compliance</h5>
+                                <div class="row g-3 mb-5">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Business Reg. Number</label>
+                                        <input type="text" class="form-control dark-form-input" name="reg_number" placeholder="(If applicable)">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">GST Number / Tax ID</label>
+                                        <input type="text" class="form-control dark-form-input" name="gst_number" placeholder="(If applicable)">
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Any Pending Legal Cases? <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control dark-form-input" name="legal_cases" placeholder="Yes/No, provide details" required>
+                                    </div>
+                                    <div class="col-12 mt-4">
+                                        <label class="custom-check-label text-white fw-bold">
+                                            <input type="checkbox" name="compliance_declaration" class="form-check-input custom-check-input" required> 
+                                            I declare Compliance with Mech Zone Automotive Standards.
+                                        </label>
+                                    </div>
                                 </div>
-                                
-                                <button type="submit" class="btn btn-submit-franchise w-100 py-3 fw-bold fs-5 text-uppercase tracking-wide">
+
+                                <h5 class="fw-bold mb-4 text-white text-uppercase border-bottom border-secondary pb-2" style="font-size: 1.1rem;"><span style="color: var(--accent-red, #d33c44);">Section 6:</span> Additional Information</h5>
+                                <div class="row g-3 mb-5">
+                                    <div class="col-12">
+                                        <label class="form-label">Why do you want to partner with us? <span class="text-danger">*</span></label>
+                                        <textarea class="form-control dark-form-input" name="reason" rows="3" placeholder="Briefly describe your motivation" required></textarea>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Any Questions or Comments</label>
+                                        <textarea class="form-control dark-form-input" name="comments" rows="2" placeholder="Leave your questions here"></textarea>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn btn-submit-franchise w-100 py-3 fw-bold fs-5 text-uppercase tracking-wide mt-2">
                                     Submit Application <i class="fas fa-paper-plane ms-2"></i>
                                 </button>
                             </form>
@@ -146,9 +287,9 @@
                     </div>
                 </div>
                 
-                <div class="col-md-5">
+                <div class="col-lg-5 d-none d-lg-block">
                     <div class="sticky-top" style="top: 100px;">
-                        <h4 class="fw-bold mb-4 pb-2 d-inline-block text-white" style="border-bottom: 2px solid var(--accent-red, #d33c44);">The Franchise Advantage</h4>
+                        <h4 class="fw-bold mb-4 pb-2 d-inline-block text-white text-uppercase" style="border-bottom: 2px solid var(--accent-red, #d33c44); letter-spacing: 1px;">The Franchise Advantage</h4>
                         
                         <div class="benefit-item mt-2">
                             <h6 class="fw-bold mb-2 text-white"><i class="fas fa-shield-alt me-2" style="color: var(--accent-red, #d33c44);"></i> Established Brand Authority</h6>
@@ -176,7 +317,7 @@
                         </div>
                         
                         <div class="mt-4 p-4 text-center rounded-3 shadow" style="background: linear-gradient(135deg, #d33c44 0%, #b02a31 100%); border: 1px solid #ff4d55;">
-                            <h5 class="fw-bold mb-2 text-white">High ROI Potential</h5>
+                            <h5 class="fw-bold mb-2 text-white text-uppercase">High ROI Potential</h5>
                             <p class="small text-white opacity-75 mb-0" style="line-height: 1.6;">Our structured model is designed for rapid break-even and sustainable long-term profitability.</p>
                         </div>
                     </div>

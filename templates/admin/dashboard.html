@@ -78,6 +78,14 @@
         border-color: #444;
     }
 
+    /* Special styling for Emergency Card */
+    .admin-action-card.emergency-card {
+        border-left-color: #ff4d4d;
+    }
+    .admin-action-card.emergency-card:hover {
+        border-color: #ff4d4d;
+    }
+
     .action-icon-bg {
         background-color: #111;
         border: 1px solid #333;
@@ -90,13 +98,19 @@
         color: white;
         border-color: var(--accent-red, #d33c44);
     }
+    
+    /* Emergency icon hover state */
+    .admin-action-card.emergency-card:hover .action-icon-bg {
+        background-color: #ff4d4d;
+        border-color: #ff4d4d;
+    }
 </style>
 
 <div class="container my-5 py-4 fade-in">
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-5 border-bottom pb-4" style="border-color: #333 !important;">
         <div>
-            <span class="section-tag mb-1">DASHBOARD</span>
-            <h2 class="fw-bolder text-white mb-0" style="font-size: 2.5rem; letter-spacing: -1px;">System Control Panel</h2>
+            <span class="section-tag mb-1 text-danger fw-bold" style="letter-spacing: 2px;">DASHBOARD</span>
+            <h2 class="fw-bolder text-white mb-0 text-uppercase" style="font-size: 2.5rem; letter-spacing: -1px;">System Control Panel</h2>
         </div>
         <div class="mt-3 mt-md-0">
             <span class="badge px-4 py-2 fs-6 fw-bold tracking-wide text-uppercase" style="background-color: rgba(211, 60, 68, 0.15); color: var(--accent-red, #d33c44); border: 1px solid rgba(211, 60, 68, 0.3);">
@@ -156,12 +170,13 @@
     </div>
     
     <div class="mb-4">
-        <h4 class="fw-bold text-white mb-2 d-inline-block">Management Modules</h4>
-        <p class="text-muted small">Select a module below to configure system settings and users.</p>
+        <h4 class="fw-bold text-white mb-2 d-inline-block text-uppercase border-bottom border-danger pb-1">Management Modules</h4>
+        <p class="text-muted small">Select a module below to configure system settings, users, and incoming requests.</p>
     </div>
     
     <div class="row g-4">
-        <div class="col-md-6 col-xl-3">
+        
+        <div class="col-md-6 col-xl-4">
             <div class="card border-0 shadow-sm admin-action-card h-100" onclick="window.location.href='{{ url_for('manage_customers') }}'">
                 <div class="card-body p-4">
                     <div class="d-flex justify-content-between align-items-center">
@@ -177,7 +192,7 @@
             </div>
         </div>
         
-        <div class="col-md-6 col-xl-3">
+        <div class="col-md-6 col-xl-4">
             <div class="card border-0 shadow-sm admin-action-card h-100" onclick="window.location.href='{{ url_for('manage_franchises') }}'">
                 <div class="card-body p-4">
                     <div class="d-flex justify-content-between align-items-center">
@@ -193,12 +208,12 @@
             </div>
         </div>
         
-        <div class="col-md-6 col-xl-3">
+        <div class="col-md-6 col-xl-4">
             <div class="card border-0 shadow-sm admin-action-card h-100" onclick="window.location.href='{{ url_for('approve_requests') }}'">
                 <div class="card-body p-4">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h5 class="card-title fw-bold text-white mb-2">Application Queue</h5>
+                            <h5 class="card-title fw-bold text-white mb-2">Franchise Queue</h5>
                             <p class="card-text fw-bold small mb-0" style="color: var(--accent-red, #d33c44);">
                                 <i class="fas fa-circle me-1" style="font-size: 8px; vertical-align: middle;"></i> {{ pending_requests }} pending requests
                             </p>
@@ -211,7 +226,7 @@
             </div>
         </div>
 
-        <div class="col-md-6 col-xl-3">
+        <div class="col-md-6 col-xl-4">
             <div class="card border-0 shadow-sm admin-action-card h-100" onclick="window.location.href='{{ url_for('manage_appointments') }}'">
                 <div class="card-body p-4">
                     <div class="d-flex justify-content-between align-items-center">
@@ -226,6 +241,40 @@
                 </div>
             </div>
         </div>
+        
+        <div class="col-md-6 col-xl-4">
+            <div class="card border-0 shadow-sm admin-action-card emergency-card h-100" onclick="window.location.href='/admin/emergency-requests'">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="card-title fw-bold text-white mb-2">Emergency Alerts</h5>
+                            <p class="card-text fw-bold small mb-0" style="color: #ff4d4d;">
+                                <i class="fas fa-exclamation-triangle me-1"></i> View 24/7 SOS Requests
+                            </p>
+                        </div>
+                        <div class="rounded-circle p-3 action-icon-bg" style="color: #ff4d4d;">
+                            <i class="fas fa-ambulance fs-4"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- <div class="col-md-6 col-xl-4">
+            <div class="card border-0 shadow-sm admin-action-card h-100" onclick="window.location.href='#'">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="card-title fw-bold text-white mb-2">System Reports</h5>
+                            <p class="card-text text-muted small mb-0">Platform analytics & revenue</p>
+                        </div>
+                        <div class="rounded-circle p-3 action-icon-bg">
+                            <i class="fas fa-chart-line fs-4"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> -->
 
     </div>
 </div>

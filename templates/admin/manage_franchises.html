@@ -19,6 +19,7 @@
         background-color: #f8f9fa;
         border: 1px solid #dee2e6;
         padding: 10px 15px;
+        font-size: 0.9rem;
     }
     .form-control:focus, .form-select:focus {
         background-color: #ffffff;
@@ -28,9 +29,20 @@
     .form-label {
         font-weight: 600;
         color: #4a4a4a;
-        font-size: 0.85rem;
+        font-size: 0.75rem;
         text-transform: uppercase;
         letter-spacing: 0.5px;
+        margin-bottom: 5px;
+    }
+    .section-title {
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: #d32f2f;
+        text-transform: uppercase;
+        border-bottom: 1px solid #dee2e6;
+        padding-bottom: 5px;
+        margin-bottom: 15px;
+        margin-top: 25px;
     }
     .table-dark-header {
         background-color: #f8f9fa;
@@ -55,54 +67,160 @@
         font-size: 0.85rem;
         font-weight: 600;
     }
+    
+    /* Scrollable form container */
+    .scrollable-form {
+        max-height: 800px;
+        overflow-y: auto;
+        padding-right: 10px;
+    }
+    .scrollable-form::-webkit-scrollbar {
+        width: 6px;
+    }
+    .scrollable-form::-webkit-scrollbar-thumb {
+        background: #d32f2f;
+        border-radius: 4px;
+    }
 </style>
 
-<div class="container my-5 fade-in">
+<div class="container-fluid px-4 my-5 fade-in">
     <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-danger pb-3">
         <h2 class="fw-bold text-white mb-0">Franchise Management</h2>
-        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-dark text-white fw-bold px-3">Back to Dashboard</a>
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-light fw-bold px-3">Back to Dashboard</a>
     </div>
     
     <div class="row g-4">
         <div class="col-lg-4">
             <div class="admin-panel-card">
                 <div class="panel-header-dark">
-                    <h5 class="mb-0 fw-bold">Provision New Location</h5>
+                    <h5 class="mb-1 fw-bold text-uppercase">Provision Franchise</h5>
+                    <p class="small text-danger m-0 fw-bold" style="letter-spacing: 1px;">JOIN MECH ZONE AUTOMOTIVE</p>
                 </div>
-                <div class="card-body p-4">
+                <div class="card-body p-4 scrollable-form">
                     <form method="POST" action="{{ url_for('manage_franchises') }}">
-                        <div class="mb-3">
-                            <label class="form-label">System Username <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" name="username" required>
-                        </div>
-                        <div class="mb-4">
-                            <label class="form-label">Initial Password <span class="text-danger">*</span></label>
-                            <input type="password" class="form-control" name="password" required>
-                        </div>
-                        <hr class="my-4 opacity-25">
-                        <div class="mb-3">
-                            <label class="form-label">Business Name <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" name="franchise_name" placeholder="e.g., Chennai Auto Care" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">City / Region <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" name="location" required>
-                        </div>
-                        <div class="mb-4">
-                            <label class="form-label">Physical Address <span class="text-danger">*</span></label>
-                            <textarea class="form-control" name="address" rows="2" required></textarea>
-                        </div>
-                        <div class="row g-2 mb-4">
-                            <div class="col-6">
-                                <label class="form-label">Latitude</label>
-                                <input type="number" step="any" class="form-control" name="latitude" placeholder="13.0827">
+                        
+                        <div class="p-4 mb-4 rounded" style="background-color: rgba(211, 47, 47, 0.05); border: 1px solid rgba(211, 47, 47, 0.3);">
+                            <h6 class="fw-bold text-danger mb-3" style="font-size: 0.8rem; text-transform: uppercase;">System Credentials</h6>
+                            <div class="mb-3">
+                                <label class="form-label text-dark">Mobile Number (Login ID) <span class="text-danger">*</span></label>
+                                <input type="tel" class="form-control border-danger" name="mobile" required>
                             </div>
-                            <div class="col-6">
-                                <label class="form-label">Longitude</label>
-                                <input type="number" step="any" class="form-control" name="longitude" placeholder="80.2707">
+                            <div class="mb-2">
+                                <label class="form-label text-dark">Initial Password <span class="text-danger">*</span></label>
+                                <input type="password" class="form-control border-danger" name="password" required>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-danger w-100 py-3 fw-bold">Deploy Franchise</button>
+
+                        <h6 class="section-title">Section 1: Applicant Details</h6>
+                        <div class="mb-3">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" class="form-control" name="name">
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <label class="form-label">Date of Birth</label>
+                                <input type="date" class="form-control" name="dob">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label">Gender</label>
+                                <select class="form-select" name="gender">
+                                    <option value="" disabled selected>Select</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" class="form-control" name="email">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">ID Proof (Aadhar/Passport)</label>
+                            <input type="text" class="form-control" name="id_proof">
+                        </div>
+
+                        <h6 class="section-title">Section 2: Business Information</h6>
+                        <div class="mb-3">
+                            <label class="form-label">Business / Franchise Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control border-danger" name="franchise_name" placeholder="e.g., Chennai Auto Care" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Proposed City/Area <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control border-danger" name="location" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Physical Address</label>
+                            <textarea class="form-control" name="address" rows="2"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Experience in Auto Industry</label>
+                            <input type="text" class="form-control" name="auto_experience" placeholder="Yes/No, Years">
+                        </div>
+
+                        <h6 class="section-title">Section 3: Investment & Financials</h6>
+                        <div class="mb-3">
+                            <label class="form-label">Available Investment Capital (₹)</label>
+                            <input type="number" class="form-control" name="capital">
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <label class="form-label">Source of Funds</label>
+                                <select class="form-select" name="funds_source">
+                                    <option value="" disabled selected>Select</option>
+                                    <option value="Self">Self</option>
+                                    <option value="Loan">Loan</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label">Franchise Model</label>
+                                <select class="form-select" name="franchise_model">
+                                    <option value="" disabled selected>Select</option>
+                                    <option value="Single Unit">Single Unit</option>
+                                    <option value="Multi-Unit">Multi‑Unit</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <h6 class="section-title">Section 4: Operational Readiness</h6>
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <label class="form-label">Property Ownership</label>
+                                <select class="form-select" name="ownership">
+                                    <option value="" disabled selected>Select</option>
+                                    <option value="Owned">Owned</option>
+                                    <option value="Leased">Leased</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label">Property Size (sq. ft.)</label>
+                                <input type="number" class="form-control" name="property_size">
+                            </div>
+                        </div>
+
+                        <h6 class="section-title">Section 5: Legal & Compliance</h6>
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <label class="form-label">Business Reg. No.</label>
+                                <input type="text" class="form-control" name="reg_number">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label">GST Number</label>
+                                <input type="text" class="form-control" name="gst_number">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" name="compliance" id="complianceCheck">
+                            <label class="form-check-label text-dark fw-bold" for="complianceCheck" style="font-size: 0.8rem;">I declare Compliance with Mech Zone Standards</label>
+                        </div>
+
+                        <h6 class="section-title">Section 6: Additional Info</h6>
+                        <div class="mb-4">
+                            <label class="form-label">Any Questions or Comments</label>
+                            <textarea class="form-control" name="comments" rows="2"></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-danger w-100 py-3 fw-bold text-uppercase">Provision Active Franchise</button>
                     </form>
                 </div>
             </div>

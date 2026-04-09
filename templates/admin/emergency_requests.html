@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .emergency-card {
+        background-color: #1a1a1a;
+        border: 1px solid #333;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+    }
+    
+    .emergency-card.status-pending {
+        border-left: 4px solid #ff4d4d;
+        box-shadow: 0 0 15px rgba(255, 77, 77, 0.1);
+    }
+    
+    .emergency-card.status-dispatched {
+        border-left: 4px solid #f39c12;
+    }
+    
+    .emergency-card.status-resolved {
+        border-left: 4px solid #2ecc71;
+    }
+
+    .custom-select-status {
+        background-color: #111;
+        color: #fff;
+        border: 1px solid #444;
+        border-radius: 6px;
+        padding: 5px 10px;
+        font-size: 0.85rem;
+    }
+    
+    .custom-select-status:focus {
+        outline: none;
+        border-color: var(--accent-red, #d33c44);
+    }
+</style>
+
+<div class="container my-5 py-4 fade-in">
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-secondary pb-3">
+        <div>
+            <h2 class="fw-bolder text-white mb-1"><i class="fas fa-ambulance text-danger me-2"></i> 24/7 Emergency Alerts</h2>
+            <p class="text-muted small mb-0">Manage and dispatch SOS breakdown requests</p>
+        </div>
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-light btn-sm rounded-pill px-3">
+            <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
+        </a>
+    </div>
+
+    <div class="row g-4">
+        {% if emergencies %}
+            {% for req in emergencies %}
+                <div class="col-12">
+                    <div class="emergency-card p-4 {% if req.status == 'Pending' %}status-pending{% elif req.status == 'Dispatched' %}status-dispatched{% else %}status-resolved{% endif %}">
+                        <div class="row align-items-center">
+                            
+                            <div class="col-md-3 mb-3 mb-md-0">
+                                <h5 class="text-white fw-bold mb-1">{{ req.name }}</h5>
+                                <p class="text-danger small mb-2"><i class="fas fa-phone-alt me-1"></i> {{ req.phone }}</p>
+                                <div class="badge bg-dark border border-secondary text-light p-2">
+                                    <i class="fas fa-car me-1"></i> {{ req.brand_model }} <br>
+                                    <small class="text-muted">{{ req.reg_no }}</small>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 mb-3 mb-md-0 border-start border-secondary ps-md-4">
+                                <p class="text-light small mb-1"><i class="fas fa-map-marker-alt text-danger me-1"></i> <strong>Location:</strong> {{ req.location }}</p>
+                                <p class="text-light small mb-1"><i class="fas fa-tools text-warning me-1"></i> <strong>Issue:</strong> {{ req.breakdown_nature }}</p>
+                                {% if req.other_breakdown %}
+                                    <p class="text-light small mb-1 ms-4 text-muted">"{{ req.other_breakdown }}"</p>
+                                {% endif %}
+                                <p class="text-light small mb-0"><i class="fas fa-hands-helping text-info me-1"></i> <strong>Needs:</strong> {{ req.assistance_required }}</p>
+                            </div>
+
+                            <div class="col-md-3 mb-3 mb-md-0 border-start border-secondary ps-md-4">
+                                <p class="text-muted small mb-1"><i class="far fa-clock me-1"></i> {{ req.created_at.strftime('%d %b %Y, %I:%M %p') }}</p>
+                                <p class="text-muted small mb-1"><strong>Traffic Blocked:</strong> 
+                                    <span class="{% if req.blocking_traffic == 'Yes' %}text-danger fw-bold{% endif %}">{{ req.blocking_traffic }}</span>
+                                </p>
+                                <p class="text-muted small mb-0"><strong>Payment:</strong> {{ req.payment_method }}</p>
+                            </div>
+
+                            <div class="col-md-2 text-md-end border-start border-secondary ps-md-4">
+                                <label class="small text-muted mb-1 d-block text-md-start">Update Status:</label>
+                                <select class="custom-select-status w-100" onchange="updateStatus({{ req.id }}, this.value)">
+                                    <option value="Pending" {% if req.status == 'Pending' %}selected{% endif %}>🚨 Pending</option>
+                                    <option value="Dispatched" {% if req.status == 'Dispatched' %}selected{% endif %}>🚛 Dispatched</option>
+                                    <option value="Resolved" {% if req.status == 'Resolved' %}selected{% endif %}>✅ Resolved</option>
+                                    <option value="Cancelled" {% if req.status == 'Cancelled' %}selected{% endif %}>❌ Cancelled</option>
+                                </select>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12 text-center py-5">
+                <div class="display-1 text-muted mb-3"><i class="fas fa-check-circle"></i></div>
+                <h4 class="text-white">All Clear!</h4>
+                <p class="text-muted">There are currently no emergency SOS requests.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+function updateStatus(reqId, newStatus) {
+    fetch(`/admin/update-emergency-status/${reqId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: newStatus })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(data.success) {
+            // Optional: Reload the page to reflect color changes, or you can do it dynamically via JS
+            window.location.reload(); 
+        } else {
+            alert('Error updating status');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Network error occurred');
+    });
+}
+</script>
+{% endblock %}
