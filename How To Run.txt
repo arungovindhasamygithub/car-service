@@ -1,0 +1,28 @@
+Install VS Code - https://code.visualstudio.com/download
+
+
+Step 1: Download and extract the ZIP file.
+
+Step 2: Delete the existing venv folder.
+
+Step 3: Create a new virtual environment:
+
+python -m venv venv
+
+Step 4: Activate the virtual environment:
+
+Go to the Scripts folder and run:
+
+venv\Scripts\activate
+
+Step 5: Open the terminal in the main project directory.
+
+Step 6: Install the required dependencies:
+
+pip install -r requirements.txt
+
+Step 7: Staff login credentials: https://www.mechzoneautomotive.shop/admin-login
+
+Username: admin
+
+Password: admin123
