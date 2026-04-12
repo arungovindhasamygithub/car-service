@@ -42,7 +42,9 @@
     .client-img { width: 70px; height: 70px; border: 3px solid var(--red-accent); object-fit: cover; }
     
     .top-bar { background-color: rgba(0,0,0,0.9); border-bottom: 1px solid rgba(211, 60, 68, 0.3); font-size: 0.8rem; padding: 10px 0; }
-    .main-nav { background: rgba(17, 17, 17, 0.95); padding: 15px 0; position: sticky; top: 0; z-index: 999; border-bottom: 2px solid #333; }
+ 
+   /* --- DESKTOP NAV --- */
+    .main-nav { background: rgba(17, 17, 17, 0.95); padding: 15px 0; position: sticky; top: 0; z-index: 1040; border-bottom: 2px solid #333; } /* FIXED: Raised to 1040 to sit above the black overlay */
     .nav-logo { width: 50px; height: 50px; border: 2px solid var(--red-accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--red-accent); font-weight: 900; font-size: 1.5rem; }
     .nav-links { display: flex; align-items: center; }
     .nav-links a { color: white; text-decoration: none; margin-left: 20px; font-weight: 600; font-size: 0.85rem; text-transform: uppercase; transition: 0.3s; }
@@ -51,6 +53,9 @@
     .btn-auth-top { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; padding: 8px 18px !important; margin-left: 10px !important; }
     .btn-customer-login { transition: all 0.3s ease; }
     .btn-customer-login:hover { background-color: var(--red-accent) !important; border-color: var(--red-accent) !important; color: white !important; }
+    .brand-logo { width: 150px; height: auto; transition: 0.3s ease; }
+
+
 
     .hero-wrapper {
         position: relative;
@@ -205,36 +210,32 @@
     .footer-bottom { background-color: #000; padding: 20px 0; border-top: 1px solid #222; margin-top: 50px;}
 
     .brand-logo { width: 150px; height: auto; transition: 0.3s ease; }
-    
+/* --- MOBILE MENU FIXES --- */
     .mobile-menu-btn {
         background: transparent;
         border: none;
         color: white;
-        font-size: 1.8rem;
+        font-size: 2rem; 
         cursor: pointer;
         position: relative; 
-        z-index: 1045;     
-        padding: 5px 10px;  
+        z-index: 1045; 
+        padding: 5px 15px; 
     }
-    .mobile-menu-btn:hover {
-        color: var(--red-accent);
-    }
+    .mobile-menu-btn:hover { color: var(--red-accent); }
     
     .mobile-close-btn {
         background: transparent;
         border: none;
         color: white;
-        font-size: 2rem;
+        font-size: 2.2rem;
         position: absolute;
         top: 15px;
         right: 20px;
         cursor: pointer;
-        z-index: 1070;     
+        z-index: 1050; 
         padding: 10px;      
     }
-    .mobile-close-btn:hover {
-        color: var(--red-accent);
-    }
+    .mobile-close-btn:hover { color: var(--red-accent); }
 
     .menu-overlay {
         position: fixed;
@@ -243,7 +244,7 @@
         width: 100vw;
         height: 100vh;
         background: rgba(0, 0, 0, 0.7);
-        z-index: 1050;     
+        z-index: 1030; /* FIXED: Lowered to 1030 so it strictly sits behind the main-nav */
         visibility: hidden;
         opacity: 0;
         transition: all 0.4s ease;
@@ -254,9 +255,9 @@
     }
 
     @media (max-width: 991px) {
-        .brand-logo {
-            width: 110px; 
-        }
+        .brand-logo { width: 110px; }
+        
+        .mobile-menu-btn { display: inline-block !important; } 
 
         .nav-links {
             position: fixed;
@@ -270,28 +271,27 @@
             align-items: flex-start;
             padding: 80px 30px 30px 30px;
             transition: right 0.4s ease-in-out;
-            z-index: 1060; 
+            z-index: 1045; 
             border-left: 2px solid var(--red-accent);
             box-shadow: -5px 0 20px rgba(0, 0, 0, 0.8);
             overflow-y: auto; 
         }
 
-        .nav-links.nav-active {
-            right: 0; 
+        .nav-links.nav-active { right: 0; }
+        
+        .nav-links a { 
+            margin: 15px 0; 
+            font-size: 1.1rem; 
+            width: 100%; 
+            display: block; 
+            pointer-events: auto !important; /* Forces links to be clickable */
         }
-
-        .nav-links a {
-            margin: 15px 0;
-            font-size: 1.1rem;
-            width: 100%;
-            display: block;
-        }
-
-        .nav-links .btn-auth-top {
-            width: 100%;
-            text-align: center;
-            margin-left: 0 !important;
-            padding: 12px 20px !important;
+        
+        .nav-links .btn-auth-top { 
+            width: 100%; 
+            text-align: center; 
+            margin-left: 0 !important; 
+            padding: 12px 20px !important; 
         }
     }
 </style>
@@ -334,6 +334,7 @@
             <a href="#map-section"><i class="fas fa-map-marker-alt me-1 text-danger"></i> MAP</a>
             <a href="#contact"><i class="fas fa-calendar-check me-1 text-danger"></i> BOOK APPOINTMENT</a>
             <span class="mx-2 text-secondary d-none d-lg-inline">|</span>
+           
             <a href="{{ url_for('franchise_login') }}" class="btn btn-danger btn-auth-top rounded-pill text-white fw-bold mt-4 mt-lg-0"><i class="fas fa-store me-1"></i> Franchise Login</a>
             <a href="{{ url_for('customer_login') }}" class="btn btn-outline-light btn-auth-top rounded-pill text-white fw-bold mt-2 mt-lg-0 btn-customer-login"><i class="fas fa-user me-1"></i> Customer Login</a>
         </div>
@@ -1412,6 +1413,7 @@
                       <li><a href="#map-section">Map</a></li>
                     
                     <li><a href="#contact">Book Appointment</a></li>
+                    <li><a href="/admin-login">Admin Login</a></li>
                 </ul>
             </div>
             
@@ -1497,9 +1499,9 @@
             document.body.style.overflow = 'auto'; 
         }
 
-        mobileBtn.addEventListener('click', openMenu);
-        closeBtn.addEventListener('click', closeMenu);
-        overlay.addEventListener('click', closeMenu);
+        if(mobileBtn) mobileBtn.addEventListener('click', openMenu);
+        if(closeBtn) closeBtn.addEventListener('click', closeMenu);
+        if(overlay) overlay.addEventListener('click', closeMenu);
 
         const navItems = navLinks.querySelectorAll('a');
         navItems.forEach(item => {

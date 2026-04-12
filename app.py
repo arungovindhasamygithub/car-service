@@ -260,8 +260,10 @@ def branches():
             if branch.franchise_latitude and branch.franchise_longitude:
                 branch.distance = calculate_distance(user_lat, user_lng, branch.franchise_latitude, branch.franchise_longitude)
             else:
-                branch.distance = None
-        branches = sorted(branches, key=lambda x: x.distance if x.distance else float('inf'))
+                branch.distance = None # Ensure attribute exists
+                
+        # Safe sort using getattr to prevent AttributeError
+        branches = sorted(branches, key=lambda x: getattr(x, 'distance', None) or float('inf'))
     
     return render_template('branches.html', branches=branches)
 
@@ -431,12 +433,18 @@ def customer_dashboard():
         return redirect(url_for('index'))
     services = Service.query.filter_by(customer_id=current_user.id).order_by(Service.created_at.desc()).all()
     branches = User.query.filter_by(role='franchise', is_active=True).all()
+    
     if current_user.latitude and current_user.longitude:
         for branch in branches:
             if branch.franchise_latitude and branch.franchise_longitude:
                 branch.distance = calculate_distance(current_user.latitude, current_user.longitude, 
                                                    branch.franchise_latitude, branch.franchise_longitude)
-        branches = sorted(branches, key=lambda x: x.distance if x.distance else float('inf'))[:3]
+            else:
+                branch.distance = None # Ensure attribute exists to prevent AttributeError
+                
+        # Safe sort using getattr to handle missing or None values gracefully
+        branches = sorted(branches, key=lambda x: getattr(x, 'distance', None) or float('inf'))[:3]
+        
     return render_template('customer/dashboard.html', services=services, branches=branches)
 
 @app.route('/customer/service-history')
